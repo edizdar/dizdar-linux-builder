@@ -1,0 +1,35 @@
+# Hardware & Firmware (Non-free firmware)
+firmware-linux
+firmware-linux-free
+firmware-linux-nonfree
+firmware-misc-nonfree
+firmware-amd-graphics
+firmware-intel-media
+
+# Wireless Network Drivers
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+firmware-brcm80211
+firmware-libertas
+firmware-b43-installer
+
+# Bluetooth
+bluez
+bluez-firmware
+firmware-intel-sound
+
+# CPU Microcode
+intel-microcode
+amd64-microcode
+
+# Printing support
+cups
+cups-bsd
+cups-client
+cups-filters
+ghostscript
+foomatic-db-compressed-ppds
+hpijs-ppds
+hplip
+printer-driver-all

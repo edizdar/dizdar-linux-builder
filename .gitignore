@@ -1,0 +1,14 @@
+# ISO images
+*.iso
+*.iso.zsync
+
+# Live-build temp folders
+.build/
+chroot/
+binary/
+local/
+cache/
+
+# General OS temp files
+.DS_Store
+Thumbs.db

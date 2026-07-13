@@ -1,0 +1,65 @@
+# Core Desktop Environment
+task-xfce-desktop
+xfce4
+xfce4-goodies
+xfce4-docklike-plugin
+lightdm
+lightdm-gtk-greeter
+lightdm-gtk-greeter-settings
+
+# System Tools (GUI replacements for terminal tasks)
+gnome-software
+gnome-software-plugin-flatpak
+flatpak
+gdebi
+gufw
+gparted
+timeshift
+synaptic
+system-config-printer
+simple-scan
+
+# Networking, Power, Sound
+network-manager-gnome
+xfce4-power-manager
+pulseaudio
+pavucontrol
+xfce4-pulseaudio-plugin
+blueman
+gvfs-backends
+gvfs-fuse
+ntfs-3g
+
+# System Utilities
+file-roller
+galculator
+evince
+ristretto
+xfce4-screenshooter
+mousepad
+xdg-user-dirs-gtk
+
+# Core End-User Applications
+firefox-esr
+vlc
+libreoffice-gtk3
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+
+# Customization & Utility Tools
+gtk2-engines-murrine
+gtk-engines-pixbuf
+plymouth
+plymouth-themes
+git
+curl
+wget
+unzip
+tar
+dconf-cli
+policykit-1-gnome
+zenity
+mtools
+dirmngr
+ca-certificates

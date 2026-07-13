@@ -1,0 +1,44 @@
+name: Build Dizdar Linux ISO
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Allows manual triggering from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Live-Build Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso git curl wget unzip tar dconf-cli mtools
+
+      - name: Make build script executable
+        run: chmod +x build.sh
+
+      - name: Build ISO
+        run: |
+          # Run the build script as root
+          sudo ./build.sh
+
+      - name: Locate ISO file
+        id: locate_iso
+        run: |
+          ISO_PATH=$(ls *.iso | head -n 1)
+          echo "ISO_FILE=$ISO_PATH" >> $GITHUB_ENV
+          echo "Found ISO: $ISO_PATH"
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dizdar-linux-iso
+          path: ${{ env.ISO_FILE }}
+          if-no-files-found: error
+          retention-days: 5
