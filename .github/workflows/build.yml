@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -25,8 +27,19 @@ jobs:
 
       - name: Build ISO
         run: |
-          # Run the build script as root
-          sudo ./build.sh
+          # Run the build script as root and capture log
+          sudo ./build.sh 2>&1 | tee build.log
+
+      - name: Upload build log on failure
+        if: failure()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b build-log || git checkout build-log
+          cp build.log error.log
+          git add error.log
+          git commit -m "Upload failed build log"
+          git push -f origin build-log
 
       - name: Locate ISO file
         id: locate_iso
