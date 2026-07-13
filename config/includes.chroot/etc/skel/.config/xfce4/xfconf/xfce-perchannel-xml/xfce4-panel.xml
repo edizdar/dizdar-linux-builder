@@ -34,7 +34,11 @@
       <property name="name" type="string" value="whiskermenu"/>
     </property>
     <property name="plugin-3" type="empty">
-      <property name="name" type="string" value="docklike"/>
+      <property name="name" type="string" value="tasklist"/>
+      <property name="show-labels" type="bool" value="false"/>
+      <property name="grouping" type="uint" value="1"/>
+      <property name="flat-buttons" type="bool" value="true"/>
+      <property name="sort-order" type="uint" value="0"/>
     </property>
     <property name="plugin-4" type="empty">
       <property name="name" type="string" value="separator"/>

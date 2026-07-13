@@ -2,7 +2,6 @@
 task-xfce-desktop
 xfce4
 xfce4-goodies
-xfce4-docklike-plugin
 lightdm
 lightdm-gtk-greeter
 lightdm-gtk-greeter-settings
