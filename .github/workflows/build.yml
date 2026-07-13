@@ -26,14 +26,14 @@ jobs:
         run: |
           sudo python3 -c '
           import os, re
-          paths = ["/usr/lib/live/build/chroot_linux-image", "/usr/share/live/build/scripts/build/chroot_linux-image"]
+          paths = ["/usr/lib/live/build/lb_chroot_linux-image", "/usr/share/live/build/scripts/build/lb_chroot_linux-image"]
           target_path = None
           for p in paths:
               if os.path.exists(p):
                   target_path = p
                   break
           if not target_path:
-              print("Could not find chroot_linux-image script!")
+              print("Could not find lb_chroot_linux-image script!")
               exit(1)
           print(f"Patching {target_path}...")
           with open(target_path, "r", encoding="utf-8") as f:
