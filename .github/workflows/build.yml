@@ -38,6 +38,11 @@ jobs:
           else
             echo "WARNING: live-build bootloader templates not found on host!"
           fi
+          
+          # Remove symlinks that will be overwritten to prevent cp dangling symlink errors
+          sudo rm -f config/bootloaders/isolinux/isolinux.bin
+          sudo rm -f config/bootloaders/isolinux/*.c32
+          
           ISOLINUX_BIN=$(sudo find /usr -name "isolinux.bin" 2>/dev/null | head -n 1)
           if [ -n "$ISOLINUX_BIN" ]; then
             echo "Found isolinux.bin at $ISOLINUX_BIN"
