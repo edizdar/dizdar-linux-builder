@@ -5,7 +5,7 @@ set -e
 lb config noauto \
     --mode "debian" \
     --distribution "bookworm" \
-    --debian-installer "none" \
+    --debian-installer "false" \
     --archive-areas "main contrib non-free non-free-firmware" \
     --iso-volume "Dizdar Linux Live" \
     --iso-publisher "Dizdar Linux Project" \
