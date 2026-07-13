@@ -70,8 +70,10 @@ jobs:
           '
 
 
-      - name: Make build script executable
-        run: chmod +x build.sh
+      - name: Make build script and hooks executable
+        run: |
+          chmod +x build.sh
+          chmod -R +x config/hooks/ || true
 
       - name: Build ISO
         run: |
