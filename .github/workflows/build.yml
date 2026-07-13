@@ -24,9 +24,19 @@ jobs:
 
       - name: Prepare Bootloader Files
         run: |
-          mkdir -p config/bootloaders
-          if [ -d /usr/share/live/build/bootloaders/isolinux ]; then
-            cp -r /usr/share/live/build/bootloaders/isolinux config/bootloaders/
+          mkdir -p config/bootloaders/isolinux
+          TEMPLATES_DIR=""
+          for d in "/usr/share/live/build/bootloaders/isolinux" "/usr/share/live-build/bootloaders/isolinux" "/usr/share/live/build/bootloader/isolinux"; do
+            if [ -d "$d" ]; then
+              TEMPLATES_DIR="$d"
+              break
+            fi
+          done
+          if [ -n "$TEMPLATES_DIR" ]; then
+            echo "Found live-build bootloader templates at $TEMPLATES_DIR"
+            cp -r "$TEMPLATES_DIR"/* config/bootloaders/isolinux/
+          else
+            echo "WARNING: live-build bootloader templates not found on host!"
           fi
           ISOLINUX_BIN=$(find /usr -name "isolinux.bin" | head -n 1)
           if [ -n "$ISOLINUX_BIN" ]; then
