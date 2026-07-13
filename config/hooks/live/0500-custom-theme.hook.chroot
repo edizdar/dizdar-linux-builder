@@ -19,9 +19,9 @@ git clone --depth 1 https://github.com/yeyushengfan258/Win11-icon-theme.git /tmp
 /tmp/win11-icons/install.sh -d /usr/share/icons
 rm -rf /tmp/win11-icons
 
-# Set up custom wallpaper
-echo "Downloading custom wallpaper..."
-curl -L -o /usr/share/backgrounds/dizdar_wallpaper.jpg "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop"
+# Set up custom wallpaper (already included locally in config/includes.chroot)
+echo "Setting up custom wallpaper..."
+
 
 # Set default Plymouth boot splash theme
 if [ -d /usr/share/plymouth/themes/spinner ]; then
