@@ -24,7 +24,10 @@ jobs:
 
       - name: Prepare Bootloader Files
         run: |
-          mkdir -p config/bootloaders/isolinux
+          mkdir -p config/bootloaders
+          if [ -d /usr/share/live/build/bootloaders/isolinux ]; then
+            cp -r /usr/share/live/build/bootloaders/isolinux config/bootloaders/
+          fi
           ISOLINUX_BIN=$(find /usr -name "isolinux.bin" | head -n 1)
           if [ -n "$ISOLINUX_BIN" ]; then
             echo "Found isolinux.bin at $ISOLINUX_BIN"
