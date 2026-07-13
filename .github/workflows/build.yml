@@ -20,7 +20,8 @@ jobs:
       - name: Setup Live-Build Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y live-build debootstrap debian-archive-keyring squashfs-tools xorriso git curl wget unzip tar dconf-cli mtools
+          sudo apt-get install -y live-build debootstrap debian-archive-keyring squashfs-tools xorriso git curl wget unzip tar dconf-cli mtools syslinux isolinux
+
 
       - name: Patch Live-Build Contents Bug
         run: |
