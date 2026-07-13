@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -e
+
+echo "=== Copying Isolinux Bootloader Files to /root/isolinux ==="
+
+# Create the /root/isolinux directory inside the chroot
+mkdir -p /root/isolinux
+
+# Find and copy isolinux.bin inside the chroot
+if [ -f /usr/lib/ISOLINUX/isolinux.bin ]; then
+    cp /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
+    echo "Copied isolinux.bin from /usr/lib/ISOLINUX"
+elif [ -f /usr/lib/syslinux/isolinux.bin ]; then
+    cp /usr/lib/syslinux/isolinux.bin /root/isolinux/isolinux.bin
+    echo "Copied isolinux.bin from /usr/lib/syslinux"
+else
+    # Fallback search
+    ISOLINUX_BIN=$(find /usr -name "isolinux.bin" | head -n 1)
+    if [ -n "$ISOLINUX_BIN" ]; then
+        cp "$ISOLINUX_BIN" /root/isolinux/isolinux.bin
+        echo "Copied isolinux.bin from $ISOLINUX_BIN"
+    else
+        echo "WARNING: isolinux.bin not found inside chroot!"
+    fi
+fi
+
+# Find and copy vesamenu.c32 inside the chroot
+if [ -f /usr/lib/syslinux/modules/bios/vesamenu.c32 ]; then
+    cp /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
+    echo "Copied vesamenu.c32 from bios modules"
+elif [ -f /usr/lib/syslinux/vesamenu.c32 ]; then
+    cp /usr/lib/syslinux/vesamenu.c32 /root/isolinux/vesamenu.c32
+    echo "Copied vesamenu.c32 from /usr/lib/syslinux"
+else
+    # Fallback search
+    VESAMENU_C32=$(find /usr -name "vesamenu.c32" | head -n 1)
+    if [ -n "$VESAMENU_C32" ]; then
+        cp "$VESAMENU_C32" /root/isolinux/vesamenu.c32
+        echo "Copied vesamenu.c32 from $VESAMENU_C32"
+    else
+        echo "WARNING: vesamenu.c32 not found inside chroot!"
+    fi
+fi
+
+echo "=== Isolinux Copy Completed ==="
