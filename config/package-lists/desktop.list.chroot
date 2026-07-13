@@ -48,7 +48,6 @@ libreoffice-impress
 
 # Customization & Utility Tools
 gtk2-engines-murrine
-gtk-engines-pixbuf
 plymouth
 plymouth-themes
 git
