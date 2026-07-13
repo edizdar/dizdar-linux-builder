@@ -26,34 +26,27 @@ jobs:
         run: |
           sudo python3 -c '
           import os, re
-          paths = ["/usr/lib/live/build/lb_chroot_linux-image", "/usr/share/live/build/scripts/build/lb_chroot_linux-image"]
-          target_path = None
-          for p in paths:
-              if os.path.exists(p):
-                  target_path = p
-                  break
-          if not target_path:
-              print("Could not find lb_chroot_linux-image script!")
-              exit(1)
-          print(f"Patching {target_path}...")
-          with open(target_path, "r", encoding="utf-8") as f:
-              lines = f.readlines()
-          patched = False
-          for i, line in enumerate(lines):
-              if "Contents-" in line:
-                  print(f"Original line {i+1}: {line.strip()}")
-                  new_line = re.sub(r"(dists/[^/]+)/Contents-", r"\1/main/Contents-", line)
-                  if new_line != line:
-                      lines[i] = new_line
-                      print(f"Patched line {i+1}: {new_line.strip()}")
-                      patched = True
-          if patched:
-              with open(target_path, "w", encoding="utf-8") as f:
-                  f.writelines(lines)
-              print("Successfully patched!")
-          else:
-              print("No changes made.")
+          dir_paths = ["/usr/lib/live/build", "/usr/share/live/build/scripts/build"]
+          for d in dir_paths:
+              if os.path.exists(d):
+                  print(f"Scanning directory: {d} for files containing Contents- ...")
+                  for filename in os.listdir(d):
+                      target_path = os.path.join(d, filename)
+                      if os.path.isfile(target_path):
+                          try:
+                              with open(target_path, "r", encoding="utf-8", errors="ignore") as f:
+                                  content = f.read()
+                              if "Contents-" in content:
+                                  new_content = re.sub(r"(dists/[^/]+)/Contents-", r"\1/main/Contents-", content)
+                                  if new_content != content:
+                                      print(f"Patching {filename}...")
+                                      with open(target_path, "w", encoding="utf-8") as f:
+                                          f.write(new_content)
+                                      print(f"Successfully patched {filename}")
+                          except Exception as e:
+                              print(f"Error processing {filename}: {e}")
           '
+
 
       - name: Make build script executable
         run: chmod +x build.sh
