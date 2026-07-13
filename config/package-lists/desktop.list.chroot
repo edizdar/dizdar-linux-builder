@@ -60,4 +60,6 @@ policykit-1-gnome
 zenity
 mtools
 dirmngr
+isolinux
+syslinux
 ca-certificates
