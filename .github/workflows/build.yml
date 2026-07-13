@@ -18,7 +18,7 @@ jobs:
       - name: Setup Live-Build Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y live-build debootstrap squashfs-tools xorriso git curl wget unzip tar dconf-cli mtools
+          sudo apt-get install -y live-build debootstrap debian-archive-keyring squashfs-tools xorriso git curl wget unzip tar dconf-cli mtools
 
       - name: Make build script executable
         run: chmod +x build.sh
