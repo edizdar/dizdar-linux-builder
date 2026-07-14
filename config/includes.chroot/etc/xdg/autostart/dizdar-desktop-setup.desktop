@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Dizdar Desktop Setup
+Comment=Force Windows 11 themes and shortcuts at startup
+Exec=/usr/local/bin/dizdar-desktop-setup
+Icon=preferences-desktop-theme
+Terminal=false
+StartupNotify=false
+OnlyShowIn=XFCE;
+RunHook=0
