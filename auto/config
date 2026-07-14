@@ -11,8 +11,6 @@ lb config noauto \
     --iso-publisher "Dizdar Linux Project" \
     --iso-application "Dizdar Linux" \
     --binary-images "iso" \
-    --hostname "dizdar-linux" \
-    --username "dizdar" \
     --memtest "none" \
     --apt-indices "false" \
     --apt-recommends "true" \
