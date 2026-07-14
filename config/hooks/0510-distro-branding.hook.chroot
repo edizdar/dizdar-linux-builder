@@ -1,0 +1,48 @@
+#!/bin/sh
+
+set -e
+
+echo "=== Applying Distro Branding (Dizdar Linux Everywhere) ==="
+
+# 1. Update OS Release Information (System properties, About OS, neofetch)
+cat << 'EOF' > /etc/os-release
+PRETTY_NAME="Dizdar Linux 1.0 (Charcoal-Amber)"
+NAME="Dizdar Linux"
+VERSION_ID="1.0"
+VERSION="1.0 (Charcoal-Amber)"
+ID=dizdar
+ID_LIKE=debian
+HOME_URL="https://github.com/edizdar/dizdar-linux-builder"
+SUPPORT_URL="https://github.com/edizdar/dizdar-linux-builder/issues"
+BUG_REPORT_URL="https://github.com/edizdar/dizdar-linux-builder/issues"
+EOF
+
+cp /etc/os-release /usr/lib/os-release || true
+
+# 2. Update Console Login Banners (TTY / issue)
+echo "Dizdar Linux 1.0 (Charcoal-Amber) \n \l" > /etc/issue
+echo "Dizdar Linux 1.0 (Charcoal-Amber)" > /etc/issue.net
+
+# 3. Custom Branding for Calamares Graphical Installer
+if [ -d /etc/calamares/branding/debian ]; then
+    echo "Branding Calamares installer..."
+    
+    # Replace default Debian branding properties with Dizdar Linux
+    if [ -f /etc/calamares/branding/debian/branding.desc ]; then
+        # Replace product names
+        sed -i 's/Debian GNU\/Linux/Dizdar Linux/g' /etc/calamares/branding/debian/branding.desc
+        sed -i 's/Debian/Dizdar/g' /etc/calamares/branding/debian/branding.desc
+        sed -i 's/debian/dizdar/g' /etc/calamares/branding/debian/branding.desc
+        
+        # Replace URLs
+        sed -i 's|https://www.debian.org/|https://github.com/edizdar/dizdar-linux-builder|g' /etc/calamares/branding/debian/branding.desc
+        sed -i 's|https://support.debian.org/|https://github.com/edizdar/dizdar-linux-builder/issues|g' /etc/calamares/branding/debian/branding.desc
+    fi
+fi
+
+# 4. Clean up default Debian menu shortcuts/branding if any
+if [ -f /usr/share/desktop-directories/debian-menu.directory ]; then
+    rm -f /usr/share/desktop-directories/debian-menu.directory
+fi
+
+echo "=== Distro Branding Applied Successfully ==="

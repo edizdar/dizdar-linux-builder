@@ -11,10 +11,12 @@ lb config noauto \
     --iso-publisher "Dizdar Linux Project" \
     --iso-application "Dizdar Linux" \
     --binary-images "iso" \
+    --hostname "dizdar-linux" \
+    --username "dizdar" \
     --memtest "none" \
     --apt-indices "false" \
     --apt-recommends "true" \
-    --bootappend-live "boot=live components quiet splash locales=tr_TR.UTF-8 keyboard-layouts=tr plymouth.ignore-serial-consoles" \
+    --bootappend-live "boot=live components quiet splash locales=tr_TR.UTF-8 keyboard-layouts=tr username=dizdar hostname=dizdar-linux plymouth.ignore-serial-consoles" \
     --security "false" \
     "${@}"
 
