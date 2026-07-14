@@ -58,7 +58,7 @@ jobs:
           else
             echo "isolinux.bin not found!"
           fi
-          VESAMENU_C32=$(sudo find /usr -name "vesamenu.c32" 2>/dev/null | head -n 1)
+          VESAMENU_C32=$(sudo find /usr -path "*bios*" -name "vesamenu.c32" 2>/dev/null | head -n 1)
           if [ -n "$VESAMENU_C32" ]; then
             echo "Found vesamenu.c32 at $VESAMENU_C32"
             BIOS_DIR=$(dirname "$VESAMENU_C32")
