@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Android Uygulamaları
+Comment=Dizdar Linux Android Uygulama Katmanı (APK)
+Exec=/usr/local/bin/dizdar-android-launcher
+Icon=android-sdk
+Terminal=false
+Categories=System;Utility;
+Path=
+StartupNotify=true

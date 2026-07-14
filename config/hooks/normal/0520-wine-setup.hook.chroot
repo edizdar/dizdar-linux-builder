@@ -1,0 +1,78 @@
+#!/bin/sh
+
+set -e
+
+echo "=== Configuring Wine (Windows Compatibility) & Waydroid (Android Compatibility) ==="
+
+# 1. Enable 32-bit architecture for Wine32 (required for most Windows apps)
+dpkg --add-architecture i386
+
+# 2. Add Waydroid Official Repository
+export DEBIAN_FRONTEND=noninteractive
+curl -fsSL https://repo.waydroid.net/waydroid.gpg -o /usr/share/keyrings/waydroid.gpg
+echo "deb [signed-by=/usr/share/keyrings/waydroid.gpg] https://repo.waydroid.net/ bookworm main" > /etc/apt/sources.list.d/waydroid.list
+
+# 3. Update Package lists
+apt-get update
+
+# 4. Install Wine, Wine32, Wine64, Winetricks, Zenity (for dialogs) and Waydroid
+apt-get install -y \
+    wine \
+    wine32:i386 \
+    wine64 \
+    winetricks \
+    waydroid \
+    zenity \
+    pkexec
+
+# 5. Set up system-wide Wine file associations (.exe opens with Wine automatically)
+mkdir -p /etc/xdg
+cat << 'EOF' >> /etc/xdg/mimeapps.list
+
+[Default Applications]
+application/x-ms-dos-executable=wine.desktop
+application/x-msi=wine.desktop
+application/x-ms-shortcut=wine.desktop
+EOF
+
+# 6. Create custom Waydroid launcher script for easy user initialization
+cat << 'EOF' > /usr/local/bin/dizdar-android-launcher
+#!/bin/bash
+
+# Check if Waydroid is already initialized by looking for the image folder
+if [ ! -d /var/lib/waydroid/images ]; then
+    zenity --question \
+        --title="Dizdar Linux Android Uyumluluk Katmanı" \
+        --text="Android Uyumluluk Katmanı (Waydroid) henüz başlatılmamış.\n\nİlk açılışta yaklaşık 800MB Android sistem imajı indirilecektir.\n\nİndirme ve kurulum işlemini başlatmak istiyor musunuz?\n(Not: İnternet bağlantınız olmalıdır)" \
+        --width=450
+
+    if [ $? -eq 0 ]; then
+        # Run init via pkexec for admin rights, using zenity progress bar
+        (
+            echo "# Android imajları indiriliyor ve kuruluyor. Lütfen bekleyin..."
+            pkexec waydroid init -s GAPPS -f 2>&1
+        ) | zenity --progress \
+            --title="Waydroid Başlatılıyor" \
+            --text="Android sistemi indiriliyor..." \
+            --pulsate \
+            --auto-close \
+            --no-cancel
+
+        if [ $? -eq 0 ]; then
+            zenity --info --title="Başarılı" --text="Android Uyumluluk Katmanı başarıyla kuruldu! Tekrar tıklayarak açabilirsiniz." --width=350
+        else
+            zenity --error --title="Hata" --text="Kurulum sırasında bir hata oluştu. Lütfen internetinizi kontrol edip tekrar deneyin." --width=350
+        fi
+    fi
+    exit 0
+fi
+
+# If already initialized, start container and launch UI
+zenity --info --title="Android Başlatılıyor" --text="Android Katmanı başlatılıyor. Lütfen pencerenin açılmasını bekleyin..." --timeout=3 --width=300 &
+pkexec systemctl start waydroid-container || true
+waydroid show-full-ui &
+EOF
+
+chmod +x /usr/local/bin/dizdar-android-launcher
+
+echo "=== Wine and Waydroid Configuration Completed ==="
