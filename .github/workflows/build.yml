@@ -42,7 +42,7 @@ jobs:
           done
           if [ -n "$TEMPLATES_DIR" ]; then
             echo "Found live-build bootloader templates at $TEMPLATES_DIR"
-            sudo cp -r "$TEMPLATES_DIR"/* config/bootloaders/isolinux/ || true
+            sudo cp -rL "$TEMPLATES_DIR"/* config/bootloaders/isolinux/ || true
           else
             echo "WARNING: live-build bootloader templates not found on host!"
           fi
@@ -54,7 +54,7 @@ jobs:
           ISOLINUX_BIN=$(sudo find /usr -name "isolinux.bin" 2>/dev/null | head -n 1)
           if [ -n "$ISOLINUX_BIN" ]; then
             echo "Found isolinux.bin at $ISOLINUX_BIN"
-            sudo cp "$ISOLINUX_BIN" config/bootloaders/isolinux/isolinux.bin
+            sudo cp -L "$ISOLINUX_BIN" config/bootloaders/isolinux/isolinux.bin
           else
             echo "isolinux.bin not found!"
           fi
@@ -62,7 +62,7 @@ jobs:
           if [ -n "$VESAMENU_C32" ]; then
             echo "Found vesamenu.c32 at $VESAMENU_C32"
             BIOS_DIR=$(dirname "$VESAMENU_C32")
-            sudo cp -r "$BIOS_DIR"/* config/bootloaders/isolinux/ || true
+            sudo cp -rL "$BIOS_DIR"/* config/bootloaders/isolinux/ || true
           else
             echo "vesamenu.c32 not found!"
           fi
