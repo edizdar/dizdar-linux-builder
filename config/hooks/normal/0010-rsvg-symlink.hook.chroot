@@ -2,9 +2,32 @@
 
 set -e
 
-echo "=== Creating rsvg to rsvg-convert symlink inside chroot ==="
+echo "=== Creating rsvg wrapper script inside chroot ==="
 
-# Create symlink from rsvg-convert to rsvg
-ln -sf /usr/bin/rsvg-convert /usr/bin/rsvg
+cat << 'EOF' > /usr/bin/rsvg
+#!/bin/bash
+# Wrapper to translate old rsvg syntax to rsvg-convert syntax
 
-echo "=== Symlink Created successfully ==="
+has_o=false
+for arg in "$@"; do
+  if [ "$arg" = "-o" ] || [ "$arg" = "--output" ]; then
+    has_o=true
+    break
+  fi
+done
+
+if [ "$has_o" = true ]; then
+  exec rsvg-convert "$@"
+else
+  output_file="${@: -1}"
+  input_file="${@: -2: 1}"
+  num_args=$#
+  options_count=$((num_args - 2))
+  options=("${@:1:options_count}")
+  exec rsvg-convert "${options[@]}" -o "$output_file" "$input_file"
+fi
+EOF
+
+chmod +x /usr/bin/rsvg
+
+echo "=== Wrapper Created successfully ==="
