@@ -107,10 +107,29 @@ jobs:
                           except Exception as e:
                               print(f"Error processing {filename}: {e}")
           
-          # Patch local bootloader cfg files for custom branding
+          # 1. Normalize line endings (CRLF -> LF) for all chroot configuration files and hooks
+          chroot_dir = "config/includes.chroot"
+          if os.path.exists(chroot_dir):
+              print("Converting all chroot files to LF...")
+              for root, dirs, files in os.walk(chroot_dir):
+                  for file in files:
+                      if file.endswith((".sh", ".desktop", ".xml", ".cfg", ".conf")) or file in ["default", "dizdar-desktop-setup"]:
+                          path = os.path.join(root, file)
+                          try:
+                              with open(path, "rb") as f:
+                                  data = f.read()
+                              if b"\r\n" in data:
+                                  print(f"Normalizing line endings (CRLF -> LF) in: {os.path.relpath(path, chroot_dir)}")
+                                  data_lf = data.replace(b"\r\n", b"\n")
+                                  with open(path, "wb") as f:
+                                      f.write(data_lf)
+                          except Exception as e:
+                              print(f"Error normalizing line endings in {file}: {e}")
+
+          # 2. Patch local bootloader cfg files for custom branding and kernel parameters
           bootloader_dir = "config/bootloaders/isolinux"
           if os.path.exists(bootloader_dir):
-              print("Patching bootloader config files for branding...")
+              print("Patching bootloader config files for branding and parameters...")
               for filename in os.listdir(bootloader_dir):
                   if filename.endswith(".cfg") or filename == "isolinux.cfg":
                       path = os.path.join(bootloader_dir, filename)
@@ -119,10 +138,13 @@ jobs:
                               c = f.read()
                           nc = c.replace("Debian GNU/Linux", "Dizdar Linux")
                           nc = nc.replace("Debian", "Dizdar")
+                          # Inject Turkish locales, Turkish keyboard, and custom live-config user credentials into kernel command line
+                          nc = nc.replace("boot=live components quiet splash", "boot=live components quiet splash locales=tr_TR.UTF-8 keyboard-layouts=tr username=dizdar hostname=dizdar-linux")
+                          nc = nc.replace("boot=live components", "boot=live components quiet splash locales=tr_TR.UTF-8 keyboard-layouts=tr username=dizdar hostname=dizdar-linux")
                           if nc != c:
                               with open(path, "w", encoding="utf-8") as f:
                                   f.write(nc)
-                              print(f"Branded bootloader file: {filename}")
+                              print(f"Branded and parameterized bootloader file: {filename}")
                       except Exception as e:
                           print(f"Error branding {filename}: {e}")
           '

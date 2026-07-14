@@ -17,6 +17,10 @@ xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -s fa
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -s true --create -t bool || true
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -s true --create -t bool || true
 
+# Hide removable drives from Thunar sidebar (disket / usb)
+xfconf-query -c thunar -p /side-pane-devices-show-removable -s false --create -t bool || true
+
+
 # 4. Force Windows 11 Dark Theme, Icons, and Window buttons
 xfconf-query -c xsettings -p /Net/ThemeName -s "Win11-dark" --create -t string || true
 xfconf-query -c xsettings -p /Net/IconThemeName -s "Win11-dark" --create -t string || true

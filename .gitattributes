@@ -1,9 +1,9 @@
-# Force bash scripts to always use LF line endings
+# Force Git to use LF line endings for all text and script files on checkout and commit
+* text=auto eol=lf
 *.sh text eol=lf
-auto/config text eol=lf
-config/hooks/live/* text eol=lf
-*.chroot text eol=lf
-.github/workflows/*.yml text eol=lf
-*.rc text eol=lf
+*.desktop text eol=lf
+*.hook.chroot text eol=lf
+*.list.chroot text eol=lf
 *.xml text eol=lf
+*.cfg text eol=lf
 *.conf text eol=lf

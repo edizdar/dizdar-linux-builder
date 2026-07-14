@@ -69,5 +69,9 @@ calamares-settings-debian
 firefox-esr-l10n-tr
 console-setup
 keyboard-configuration
+packagekit
+packagekit-tools
+task-turkish
+task-turkish-desktop
 
 
