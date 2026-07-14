@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# live-config script to customize user details at boot time
+# This script runs at the end of the boot process after live-config creates the user account
+
+echo "=== Dizdar Linux Boot-Time Customizations ==="
+
+# 1. Change the display name (GECOS/Real Name) of the live user to "Dizdar Linux"
+# This fixes the top-right panel logout button showing "Debian Live user"
+if getent passwd dizdar >/dev/null; then
+    chfn -f "Dizdar Linux" dizdar || true
+fi
+
+if getent passwd user >/dev/null; then
+    chfn -f "Dizdar Linux" user || true
+fi
+
+# 2. Force lightdm user config to refresh display names
+systemctl restart lightdm --no-block || true
+
+echo "=== Boot-Time Customizations Completed ==="
