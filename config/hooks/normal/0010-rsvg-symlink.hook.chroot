@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+echo "=== Creating rsvg to rsvg-convert symlink inside chroot ==="
+
+# Create symlink from rsvg-convert to rsvg
+ln -sf /usr/bin/rsvg-convert /usr/bin/rsvg
+
+echo "=== Symlink Created successfully ==="
