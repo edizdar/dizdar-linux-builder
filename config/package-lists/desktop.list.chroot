@@ -66,4 +66,8 @@ ca-certificates
 librsvg2-bin
 calamares
 calamares-settings-debian
+firefox-esr-l10n-tr
+console-setup
+keyboard-configuration
+
 
