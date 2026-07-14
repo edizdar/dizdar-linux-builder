@@ -6,7 +6,7 @@
 .build/
 chroot/
 binary/
-local/
+/local/
 cache/
 
 # General OS temp files

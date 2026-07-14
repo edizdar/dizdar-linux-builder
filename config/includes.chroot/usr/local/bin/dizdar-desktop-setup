@@ -1,0 +1,35 @@
+#!/bin/bash
+# Force Windows 11 desktop, keyboard, and panel configurations at desktop session startup
+# This resolves all override, permission, and XFconf caching issues by applying settings dynamically.
+
+echo "=== Dizdar Linux Desktop Setup ==="
+
+# 1. Bounded wait for xfconfd and desktop components to fully load
+sleep 2
+
+# 2. Force Turkish keyboard layout in the X11 GUI session
+setxkbmap tr || true
+
+# 3. Force Desktop Icons Visibility (Hide Floppy/USB/CD/Filesystem, Show Home/Trash)
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-removable -s false --create -t bool || true
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-device -s false --create -t bool || true
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -s false --create -t bool || true
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -s true --create -t bool || true
+xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -s true --create -t bool || true
+
+# 4. Force Windows 11 Dark Theme, Icons, and Window buttons
+xfconf-query -c xsettings -p /Net/ThemeName -s "Win11-dark" --create -t string || true
+xfconf-query -c xsettings -p /Net/IconThemeName -s "Win11-dark" --create -t string || true
+xfconf-query -c xfwm4 -p /general/theme -s "Win11-dark" --create -t string || true
+xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC" --create -t string || true
+
+# 5. Lock taskbar panel properties (Stay visible, reserve space for maximized windows)
+xfconf-query -c xfce4-panel -p /panels/panel-1/autohide-behavior -s 0 -t uint || true
+xfconf-query -c xfce4-panel -p /panels/panel-1/disable-struts -s false -t bool || true
+xfconf-query -c xfce4-panel -p /panels/panel-1/position-locked -s true -t bool || true
+
+# 6. Apply wallpaper path dynamically to be double-sure
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
+xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
+
+echo "=== Desktop Setup Completed Successfully ==="
