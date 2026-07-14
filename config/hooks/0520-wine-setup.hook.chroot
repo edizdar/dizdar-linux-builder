@@ -9,8 +9,8 @@ dpkg --add-architecture i386
 
 # 2. Add Waydroid Official Repository
 export DEBIAN_FRONTEND=noninteractive
-curl -fsSL https://repo.waydroid.net/waydroid.gpg -o /usr/share/keyrings/waydroid.gpg
-echo "deb [signed-by=/usr/share/keyrings/waydroid.gpg] https://repo.waydroid.net/ bookworm main" > /etc/apt/sources.list.d/waydroid.list
+curl -fsSL https://repo.waydro.id/waydroid.gpg -o /usr/share/keyrings/waydroid.gpg
+echo "deb [signed-by=/usr/share/keyrings/waydroid.gpg] https://repo.waydro.id/ bookworm main" > /etc/apt/sources.list.d/waydroid.list
 
 # 3. Update Package lists
 apt-get update
