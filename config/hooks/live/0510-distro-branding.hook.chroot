@@ -45,4 +45,9 @@ if [ -f /usr/share/desktop-directories/debian-menu.directory ]; then
     rm -f /usr/share/desktop-directories/debian-menu.directory
 fi
 
+# 5. Make all desktop launchers executable to avoid XFCE "untrusted application launcher" warnings
+if [ -d /etc/skel/Desktop ]; then
+    chmod +x /etc/skel/Desktop/*.desktop || true
+fi
+
 echo "=== Distro Branding Applied Successfully ==="
