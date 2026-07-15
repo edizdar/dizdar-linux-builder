@@ -1,4 +1,6 @@
 # Core Desktop Environment
+systemd-sysv
+live-config-systemd
 task-xfce-desktop
 xfce4
 xfce4-goodies
