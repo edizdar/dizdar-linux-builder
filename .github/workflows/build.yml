@@ -51,14 +51,14 @@ jobs:
           sudo rm -f config/bootloaders/isolinux/isolinux.bin
           sudo rm -f config/bootloaders/isolinux/*.c32
           
-          ISOLINUX_BIN=$(sudo find /usr -name "isolinux.bin" 2>/dev/null | head -n 1)
+          ISOLINUX_BIN=$(sudo find /usr -type f -name "isolinux.bin" 2>/dev/null | head -n 1)
           if [ -n "$ISOLINUX_BIN" ]; then
             echo "Found isolinux.bin at $ISOLINUX_BIN"
             sudo cp -L "$ISOLINUX_BIN" config/bootloaders/isolinux/isolinux.bin
           else
             echo "isolinux.bin not found!"
           fi
-          VESAMENU_C32=$(sudo find /usr -path "*bios*" -name "vesamenu.c32" 2>/dev/null | head -n 1)
+          VESAMENU_C32=$(sudo find /usr -type f -path "*bios*" -name "vesamenu.c32" 2>/dev/null | head -n 1)
           if [ -n "$VESAMENU_C32" ]; then
             echo "Found vesamenu.c32 at $VESAMENU_C32"
             BIOS_DIR=$(dirname "$VESAMENU_C32")
