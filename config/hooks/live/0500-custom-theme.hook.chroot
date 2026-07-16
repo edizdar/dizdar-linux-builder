@@ -36,5 +36,9 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 gtk-update-icon-cache /usr/share/icons/Win11 || true
 gtk-update-icon-cache /usr/share/icons/Win11-dark || true
 
+# Force XFCE to use our custom xfconf panel config by removing the default.xml template
+echo "Removing default XFCE panel templates..."
+rm -f /etc/xdg/xfce4/panel/default.xml || true
+
 echo "=== Theme and Icons Installation Completed ==="
 
