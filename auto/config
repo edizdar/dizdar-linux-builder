@@ -15,7 +15,7 @@ lb config noauto \
     --memtest "none" \
     --apt-indices "false" \
     --apt-recommends "true" \
-    --bootappend-live "boot=live components quiet splash locales=tr_TR.UTF-8 keyboard-layouts=tr username=dizdar hostname=dizdar-linux plymouth.ignore-serial-consoles" \
+    --bootappend-live "boot=live components quiet splash locales=tr_TR.UTF-8 keyboard-layouts=tr username=dizdar user-password=dizdar hostname=dizdar-linux plymouth.ignore-serial-consoles" \
     --security "false" \
     "${@}"
 
