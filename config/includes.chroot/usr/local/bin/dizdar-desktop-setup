@@ -1,116 +1,32 @@
 #!/bin/bash
-# Force Windows 11 desktop, keyboard, and panel configurations at desktop session startup
-# This resolves all override, permission, and XFconf caching issues by applying settings dynamically.
+# Dizdar Linux Desktop Setup - Sadece tema ve duvar kagidi, panel'e DOKUNMA!
 
 echo "=== Dizdar Linux Desktop Setup ==="
 
-# 1. Bounded wait for xfconfd and desktop components to fully load
+# Oturum acildiktan sonra biraz bekle
 sleep 3
 
-# 2. Force Turkish keyboard layout in the X11 GUI session
+# 1. Turkce klavye
 setxkbmap tr || true
 
-# =====================================================
-# 3. PANEL SETUP via xfconf-query (guaranteed to work)
-# =====================================================
-# Kill the existing panel so we can reconfigure cleanly
-xfce4-panel --quit 2>/dev/null || true
-sleep 1
-
-# Remove any stale panel config so xfconf-query starts fresh
-rm -f "$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" 2>/dev/null || true
-
-# Tell xfconfd to forget the old panel channel
-pkill -f xfconfd 2>/dev/null || true
-sleep 1
-
-# Define panel-1 (single bottom panel, full width)
-xfconf-query -c xfce4-panel -p /panels -t int -s 1 --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/position -t string -s "p=6;x=0;y=0" --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/length -t double -s 100 --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/position-locked -t bool -s true --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/size -t uint -s 48 --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/background-style -t uint -s 0 --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/disable-struts -t bool -s false --create || true
-xfconf-query -c xfce4-panel -p /panels/panel-1/autohide-behavior -t uint -s 0 --create || true
-
-# Plugin IDs for panel-1: 1=separator(expand), 2=whiskermenu, 3=tasklist, 4=separator(expand), 5=systray, 6=pulseaudio, 7=power-manager, 8=clock, 9=showdesktop
-xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids \
-  -t int -s 1 \
-  -t int -s 2 \
-  -t int -s 3 \
-  -t int -s 4 \
-  -t int -s 5 \
-  -t int -s 6 \
-  -t int -s 7 \
-  -t int -s 8 \
-  -t int -s 9 \
-  --create || true
-
-# Plugin definitions
-# plugin-1: Left-side expanding separator
-xfconf-query -c xfce4-panel -p /plugins/plugin-1 -t string -s "separator" --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-1/style -t uint -s 0 --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-1/expand -t bool -s true --create || true
-
-# plugin-2: Whisker Menu (Start Menu)
-xfconf-query -c xfce4-panel -p /plugins/plugin-2 -t string -s "whiskermenu" --create || true
-
-# plugin-3: Tasklist (Window list / Görev listesi)
-xfconf-query -c xfce4-panel -p /plugins/plugin-3 -t string -s "tasklist" --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/show-labels -t bool -s false --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/grouping -t uint -s 1 --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/flat-buttons -t bool -s true --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/sort-order -t uint -s 0 --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-3/include-all-monitors -t bool -s true --create || true
-
-# plugin-4: Right-side expanding separator
-xfconf-query -c xfce4-panel -p /plugins/plugin-4 -t string -s "separator" --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-4/style -t uint -s 0 --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-4/expand -t bool -s true --create || true
-
-# plugin-5: System Tray
-xfconf-query -c xfce4-panel -p /plugins/plugin-5 -t string -s "systray" --create || true
-
-# plugin-6: PulseAudio (Volume)
-xfconf-query -c xfce4-panel -p /plugins/plugin-6 -t string -s "pulseaudio" --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-6/enable-keyboard-shortcuts -t bool -s true --create || true
-
-# plugin-7: Power Manager (Shutdown / Kapat butonu)
-xfconf-query -c xfce4-panel -p /plugins/plugin-7 -t string -s "power-manager-plugin" --create || true
-
-# plugin-8: Clock (Saat)
-xfconf-query -c xfce4-panel -p /plugins/plugin-8 -t string -s "clock" --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-8/digital-layout -t uint -s 3 --create || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-8/mode -t uint -s 2 --create || true
-
-# plugin-9: Show Desktop
-xfconf-query -c xfce4-panel -p /plugins/plugin-9 -t string -s "showdesktop" --create || true
-
-# =====================================================
-# 4. Restart the panel with our new configuration
-# =====================================================
-xfce4-panel &
-sleep 2
-
-# 5. Force Desktop Icons Visibility (Hide Floppy/USB/CD/Filesystem, Show Home/Trash)
+# 2. Masaustu ikonlari ayarlari (USB/disket gizle, ev/cop goster)
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-removable -s false --create -t bool || true
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-device -s false --create -t bool || true
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -s false --create -t bool || true
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-trash -s true --create -t bool || true
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-home -s true --create -t bool || true
 
-# Hide removable drives from Thunar sidebar (disket / usb)
+# 3. Thunar sidebar'dan cikarabilir suruculer gizle
 xfconf-query -c thunar -p /side-pane-devices-show-removable -s false --create -t bool || true
 
-# 6. Force Windows 11 Dark Theme, Icons, and Window buttons
+# 4. Windows 11 Dark Temasi, Ikonlar, Pencere dugmeleri
 xfconf-query -c xsettings -p /Net/ThemeName -s "Win11-dark" --create -t string || true
 xfconf-query -c xsettings -p /Net/IconThemeName -s "Win11-dark" --create -t string || true
 xfconf-query -c xfwm4 -p /general/theme -s "Win11-dark" --create -t string || true
 xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC" --create -t string || true
 
-# 7. Apply wallpaper path dynamically
+# 5. Duvar kagidi
 xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
 xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
 
-echo "=== Desktop Setup Completed Successfully ==="
+echo "=== Desktop Setup Completed ==="
