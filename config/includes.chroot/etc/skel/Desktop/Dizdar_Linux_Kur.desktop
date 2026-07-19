@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Dizdar Linux'u Kur
+Comment=Dizdar Linux'u bilgisayarınıza veya sanal diske kurun
+Exec=calamares
+Icon=system-software-install
+Terminal=false
+Categories=System;

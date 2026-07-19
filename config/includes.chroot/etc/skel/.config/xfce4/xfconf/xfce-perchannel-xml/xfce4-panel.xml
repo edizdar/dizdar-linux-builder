@@ -31,7 +31,7 @@
       <property name="expand" type="bool" value="true"/>
     </property>
     <property name="plugin-2" type="string" value="whiskermenu">
-      <property name="button-icon" type="string" value="distributor-logo"/>
+      <property name="button-icon" type="string" value="dizdar-logo"/>
       <property name="show-button-title" type="bool" value="false"/>
       <property name="show-button-icon" type="bool" value="true"/>
     </property>

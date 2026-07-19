@@ -45,4 +45,8 @@ if [ -f /usr/share/desktop-directories/debian-menu.directory ]; then
     rm -f /usr/share/desktop-directories/debian-menu.directory
 fi
 
+# Remove default "Install Debian" desktop icons to avoid confusion with Dizdar Linux installer
+rm -f /etc/skel/Desktop/install-debian.desktop || true
+rm -f /usr/share/applications/install-debian.desktop || true
+
 echo "=== Distro Branding Applied Successfully ==="

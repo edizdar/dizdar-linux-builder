@@ -1,6 +1,6 @@
 favorites=firefox-esr.desktop,thunar.desktop,gnome-software.desktop,libreoffice-writer.desktop,libreoffice-calc.desktop,vlc.desktop,xfce4-settings-manager.desktop
 button-title=Dizdar Linux
-button-icon=distributor-logo
+button-icon=dizdar-logo
 button-title-visible=false
 button-icon-visible=true
 show-generic-names=true
