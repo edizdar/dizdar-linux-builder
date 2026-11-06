@@ -5,6 +5,10 @@ on:
     branches:
       - main
       - master
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'CONTRIBUTING.md'
   workflow_dispatch: # Allows manual triggering from GitHub UI
 
 jobs:
