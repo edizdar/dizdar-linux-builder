@@ -6,10 +6,10 @@ echo "=== Applying Distro Branding (Dizdar Linux Everywhere) ==="
 
 # 1. Update OS Release Information (System properties, About OS, neofetch)
 cat << 'EOF' > /etc/os-release
-PRETTY_NAME="Dizdar Linux 1.0 (Charcoal-Amber)"
+PRETTY_NAME="Dizdar Linux"
 NAME="Dizdar Linux"
 VERSION_ID="1.0"
-VERSION="1.0 (Charcoal-Amber)"
+VERSION="1.0"
 ID=dizdar
 ID_LIKE=debian
 HOME_URL="https://github.com/edizdar/dizdar-linux-builder"
@@ -20,8 +20,9 @@ EOF
 cp /etc/os-release /usr/lib/os-release || true
 
 # 2. Update Console Login Banners (TTY / issue)
-echo "Dizdar Linux 1.0 (Charcoal-Amber) \n \l" > /etc/issue
-echo "Dizdar Linux 1.0 (Charcoal-Amber)" > /etc/issue.net
+echo "Dizdar Linux \n \l" > /etc/issue
+echo "Dizdar Linux" > /etc/issue.net
+echo "Dizdar Linux" > /etc/motd
 
 # 3. Custom Branding for Calamares Graphical Installer
 if [ -d /etc/calamares/branding/debian ]; then
@@ -29,12 +30,9 @@ if [ -d /etc/calamares/branding/debian ]; then
     
     # Replace default Debian branding properties with Dizdar Linux
     if [ -f /etc/calamares/branding/debian/branding.desc ]; then
-        # Replace product names
         sed -i 's/Debian GNU\/Linux/Dizdar Linux/g' /etc/calamares/branding/debian/branding.desc
-        sed -i 's/Debian/Dizdar/g' /etc/calamares/branding/debian/branding.desc
+        sed -i 's/Debian/Dizdar Linux/g' /etc/calamares/branding/debian/branding.desc
         sed -i 's/debian/dizdar/g' /etc/calamares/branding/debian/branding.desc
-        
-        # Replace URLs
         sed -i 's|https://www.debian.org/|https://github.com/edizdar/dizdar-linux-builder|g' /etc/calamares/branding/debian/branding.desc
         sed -i 's|https://support.debian.org/|https://github.com/edizdar/dizdar-linux-builder/issues|g' /etc/calamares/branding/debian/branding.desc
     fi
@@ -45,9 +43,30 @@ if [ -f /usr/share/desktop-directories/debian-menu.directory ]; then
     rm -f /usr/share/desktop-directories/debian-menu.directory
 fi
 
-# 5. Make all desktop launchers executable to avoid XFCE "untrusted application launcher" warnings
-if [ -d /etc/skel/Desktop ]; then
-    chmod +x /etc/skel/Desktop/*.desktop || true
+# Remove default "Install Debian" desktop icons to avoid confusion with Dizdar Linux installer
+rm -f /etc/skel/Desktop/install-debian.desktop || true
+rm -f /usr/share/applications/install-debian.desktop || true
+
+# 5. Plymouth Boot Animation Branding (Replace all Debian watermark/logos with Dizdar Linux)
+echo "Customizing Plymouth Boot Splash..."
+if [ -d /usr/share/plymouth/themes ]; then
+    for theme_dir in /usr/share/plymouth/themes/*; do
+        if [ -d "$theme_dir" ]; then
+            # Copy Dizdar Linux watermark and logo to every theme
+            if [ -f /usr/share/plymouth/themes/spinner/watermark.png ]; then
+                cp -f /usr/share/plymouth/themes/spinner/watermark.png "$theme_dir/watermark.png" 2>/dev/null || true
+            fi
+            if [ -f /usr/share/plymouth/debian-logo.png ]; then
+                cp -f /usr/share/plymouth/debian-logo.png "$theme_dir/debian-logo.png" 2>/dev/null || true
+            fi
+        fi
+    done
+fi
+
+# Force initramfs to regenerate with the new Dizdar Linux Plymouth splash
+if command -v update-initramfs >/dev/null 2>&1; then
+    echo "Updating initramfs with Dizdar Linux Plymouth theme..."
+    update-initramfs -u || true
 fi
 
 echo "=== Distro Branding Applied Successfully ==="
