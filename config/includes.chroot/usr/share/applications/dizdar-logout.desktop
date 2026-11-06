@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Oturumu Kapat
+Comment=Mevcut Oturumu Kapat
+Exec=xfce4-session-logout --logout
+Icon=system-log-out
+Terminal=false
+Categories=System;Utility;
+Keywords=cikis;logout;oturum;kapat;
+StartupNotify=false

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Yeniden Başlat
+Comment=Sistemi Yeniden Başlat
+Exec=xfce4-session-logout --reboot
+Icon=system-reboot
+Terminal=false
+Categories=System;Utility;
+Keywords=yeniden;reboot;restart;baslat;
+StartupNotify=false
