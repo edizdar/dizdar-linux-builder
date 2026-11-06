@@ -27,8 +27,6 @@ echo "Dizdar Linux" > /etc/motd
 # 3. Custom Branding for Calamares Graphical Installer
 if [ -d /etc/calamares/branding/debian ]; then
     echo "Branding Calamares installer..."
-    
-    # Replace default Debian branding properties with Dizdar Linux
     if [ -f /etc/calamares/branding/debian/branding.desc ]; then
         sed -i 's/Debian GNU\/Linux/Dizdar Linux/g' /etc/calamares/branding/debian/branding.desc
         sed -i 's/Debian/Dizdar Linux/g' /etc/calamares/branding/debian/branding.desc
@@ -38,35 +36,30 @@ if [ -d /etc/calamares/branding/debian ]; then
     fi
 fi
 
-# 4. Clean up default Debian menu shortcuts/branding if any
+# 4. Clean up default Debian menu shortcuts/branding
 if [ -f /usr/share/desktop-directories/debian-menu.directory ]; then
     rm -f /usr/share/desktop-directories/debian-menu.directory
 fi
-
-# Remove default "Install Debian" desktop icons to avoid confusion with Dizdar Linux installer
 rm -f /etc/skel/Desktop/install-debian.desktop || true
 rm -f /usr/share/applications/install-debian.desktop || true
 
-# 5. Plymouth Boot Animation Branding (Replace all Debian watermark/logos with Dizdar Linux)
-echo "Customizing Plymouth Boot Splash..."
-if [ -d /usr/share/plymouth/themes ]; then
-    for theme_dir in /usr/share/plymouth/themes/*; do
-        if [ -d "$theme_dir" ]; then
-            # Copy Dizdar Linux watermark and logo to every theme
-            if [ -f /usr/share/plymouth/themes/spinner/watermark.png ]; then
-                cp -f /usr/share/plymouth/themes/spinner/watermark.png "$theme_dir/watermark.png" 2>/dev/null || true
-            fi
-            if [ -f /usr/share/plymouth/debian-logo.png ]; then
-                cp -f /usr/share/plymouth/debian-logo.png "$theme_dir/debian-logo.png" 2>/dev/null || true
-            fi
-        fi
-    done
+# 5. Plymouth Boot Animation Branding
+echo "Purging all Debian artwork from desktop-base and plymouth..."
+WATERMARK="/usr/share/plymouth/themes/spinner/watermark.png"
+LOGO="/usr/share/pixmaps/dizdar-logo.png"
+
+if [ -f "$WATERMARK" ]; then
+    find /usr/share/desktop-base /usr/share/plymouth -type f \( -name "*watermark*.png" -o -name "*watermark*.svg" \) -exec cp -f "$WATERMARK" {} \; 2>/dev/null || true
 fi
 
-# Force initramfs to regenerate with the new Dizdar Linux Plymouth splash
+if [ -f "$LOGO" ]; then
+    find /usr/share/desktop-base /usr/share/plymouth -type f \( -name "*logo*.png" -o -name "*logo*.svg" -o -name "*debian*.png" -o -name "*debian*.svg" \) -exec cp -f "$LOGO" {} \; 2>/dev/null || true
+fi
+
+# Force initramfs regeneration for ALL kernels in chroot (/boot)
 if command -v update-initramfs >/dev/null 2>&1; then
-    echo "Updating initramfs with Dizdar Linux Plymouth theme..."
-    update-initramfs -u || true
+    echo "Updating initramfs for all kernels (-k all) with Dizdar Linux Plymouth splash..."
+    update-initramfs -u -k all || true
 fi
 
 echo "=== Distro Branding Applied Successfully ==="
