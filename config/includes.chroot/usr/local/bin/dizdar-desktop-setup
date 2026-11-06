@@ -29,4 +29,15 @@ xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC" --create -t string ||
 xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
 xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
 
+# 6. Whisker Baslat Menusu Guc Dugmeleri (Kapat, Yeniden Baslat, Cikis - Sadece Baslat Menusu Icinde)
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-logout -s true --create -t bool || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/command-logout -s "xfce4-session-logout" --create -t string || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-shutdown -s true --create -t bool || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/command-shutdown -s "xfce4-session-logout --halt" --create -t string || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-restart -s true --create -t bool || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/command-restart -s "xfce4-session-logout --reboot" --create -t string || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-lockscreen -s true --create -t bool || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-switchuser -s false --create -t bool || true
+xfconf-query -c xfce4-panel -p /plugins/plugin-2/position-commands -s 1 --create -t uint || true
+
 echo "=== Desktop Setup Completed ==="
