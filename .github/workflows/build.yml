@@ -67,6 +67,12 @@ jobs:
             echo "vesamenu.c32 not found!"
           fi
 
+          # Re-apply our custom Dizdar Linux branding and remove any default Debian svg splash
+          sudo rm -f config/bootloaders/isolinux/splash.svg config/bootloaders/isolinux/bootlogo
+          if [ -d "config/includes.binary/isolinux" ]; then
+            sudo cp -rf config/includes.binary/isolinux/* config/bootloaders/isolinux/ || true
+          fi
+
       - name: Patch Live-Build Contents Bug
         run: |
           sudo python3 -c '

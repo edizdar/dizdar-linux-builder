@@ -48,11 +48,17 @@ fi
 
 # Clean up previous builds
 echo -e "${YELLOW}[2/4] Önceki derleme kalıntıları temizleniyor...${NC}"
-lb clean --purge
+lb clean
 
 # Initialize configuration
 echo -e "${YELLOW}[3/4] Live-build yapılandırması başlatılıyor...${NC}"
 lb config
+
+# Ensure custom bootloader branding is preserved
+if [ -d "config/includes.binary/isolinux" ]; then
+  mkdir -p config/bootloaders/isolinux
+  cp -rf config/includes.binary/isolinux/* config/bootloaders/isolinux/ 2>/dev/null || true
+fi
 
 # Start the build process
 echo -e "${YELLOW}[4/4] ISO Derleme işlemi başlatılıyor. Bu işlem internet hızınıza bağlı olarak 15-30 dakika sürebilir...${NC}"

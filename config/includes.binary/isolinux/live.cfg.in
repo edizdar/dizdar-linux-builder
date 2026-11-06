@@ -1,0 +1,12 @@
+label live-@FLAVOUR@
+	menu label ^Dizdar Linux'u Baslat (Canli Mod)
+	menu default
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE@
+
+label live-@FLAVOUR@-failsafe
+	menu label Dizdar Linux (^Guvenli Mod - Failsafe)
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE_FAILSAFE@
