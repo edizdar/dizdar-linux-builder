@@ -3,8 +3,17 @@
 
 echo "=== Dizdar Linux Desktop Setup ==="
 
-# Oturum acildiktan sonra biraz bekle
-sleep 3
+# 0. Masaustu izinleri ve X11 yetkisi (Gecikmesiz hemen calistir)
+chmod 755 /etc/skel/Desktop/*.desktop /usr/share/applications/dizdar-*.desktop /usr/local/bin/* 2>/dev/null || true
+if [ -d "$HOME/Desktop" ]; then
+    chmod 755 "$HOME/Desktop"/*.desktop 2>/dev/null || true
+    gio set "$HOME/Desktop"/*.desktop metadata::trusted true 2>/dev/null || true
+fi
+xhost +local:root >/dev/null 2>&1 || true
+xhost + >/dev/null 2>&1 || true
+
+# Oturum acildiktan sonra panel icin kisa bekleme
+sleep 2
 
 # 1. Turkce klavye
 setxkbmap tr || true

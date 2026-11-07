@@ -68,6 +68,11 @@ ca-certificates
 librsvg2-bin
 calamares
 calamares-settings-debian
+dosfstools
+e2fsprogs
+parted
+gdisk
+rsync
 firefox-esr-l10n-tr
 console-setup
 keyboard-configuration

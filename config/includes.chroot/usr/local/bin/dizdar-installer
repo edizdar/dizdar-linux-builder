@@ -1,24 +1,70 @@
 #!/bin/bash
-# Dizdar Linux Calamares Baslatici
+# Dizdar Linux Calamares Launcher - Tam Korumali ve Hata Bildirimli
 
-# X11 Display yetkisi
+LOGFILE="/tmp/calamares-launch.log"
+exec > >(tee -a "$LOGFILE") 2>&1
+
+echo "=== Dizdar Linux Kurulum Baslatildi: $(date) ==="
+echo "Kullanici: $(whoami) (UID: $(id -u)), DISPLAY: $DISPLAY"
+
+# 1. X11 Erisim Yetkileri
 xhost +local:root >/dev/null 2>&1 || true
 xhost + >/dev/null 2>&1 || true
 
+# 2. Root kullanicisi icin XAUTHORITY hazirla
 export DISPLAY="${DISPLAY:-:0}"
-export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
+if [ -n "$XAUTHORITY" ] && [ -f "$XAUTHORITY" ]; then
+    sudo cp "$XAUTHORITY" /root/.Xauthority 2>/dev/null || true
+    sudo chmod 644 /root/.Xauthority 2>/dev/null || true
+    export XAUTHORITY="/root/.Xauthority"
+elif [ -f "$HOME/.Xauthority" ]; then
+    sudo cp "$HOME/.Xauthority" /root/.Xauthority 2>/dev/null || true
+    sudo chmod 644 /root/.Xauthority 2>/dev/null || true
+    export XAUTHORITY="/root/.Xauthority"
+fi
 
-# Eger calamares komutu varsa dogrudan calistir
+export QT_QPA_PLATFORM=xcb
+
+# 3. Calamares calistirilabilir dosyasini bul
+CALAMARES_BIN=""
 if [ -x /usr/bin/calamares ]; then
-    if [ "$(id -u)" -eq 0 ]; then
-        exec /usr/bin/calamares "$@"
-    elif command -v pkexec >/dev/null 2>&1; then
-        exec pkexec /usr/bin/calamares "$@"
-    elif command -v sudo >/dev/null 2>&1; then
-        exec sudo -E /usr/bin/calamares "$@"
-    else
-        exec /usr/bin/calamares "$@"
+    CALAMARES_BIN="/usr/bin/calamares"
+elif [ -x /usr/local/bin/calamares ]; then
+    CALAMARES_BIN="/usr/local/bin/calamares"
+elif command -v calamares >/dev/null 2>&1; then
+    CALAMARES_BIN=$(command -v calamares)
+fi
+
+if [ -z "$CALAMARES_BIN" ]; then
+    echo "HATA: Calamares programi sistemde bulunamadi!"
+    zenity --error --title="Dizdar Linux Kurulum" --text="Calamares yukleyici programi sistemde bulunamadi!" 2>/dev/null || true
+    exit 1
+fi
+
+echo "Calamares bulundu: $CALAMARES_BIN"
+
+# 4. Onceki kalan calamares sureclerini temizle
+killall -9 calamares 2>/dev/null || true
+
+# 5. Calamares'i superuser haklariyla baslat
+if [ "$(id -u)" -eq 0 ]; then
+    $CALAMARES_BIN -d "$@"
+else
+    # Oncelikle sudo ile calistir
+    sudo -E $CALAMARES_BIN -d "$@"
+    RET=$?
+    
+    # Eger sudo basarisiz olduysa pkexec ile dene
+    if [ $RET -ne 0 ] && command -v pkexec >/dev/null 2>&1; then
+        echo "Sudo cikis kodu: $RET. pkexec ile tekrar deneniyor..."
+        pkexec env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" $CALAMARES_BIN -d "$@"
+        RET=$?
     fi
-elif [ -x /usr/bin/install-debian ]; then
-    exec /usr/bin/install-debian "$@"
+    
+    if [ $RET -ne 0 ]; then
+        echo "Calamares hata ile sonlandi, cikis kodu: $RET"
+        ERR_MSG=$(tail -n 15 "$LOGFILE")
+        zenity --error --title="Kurulum Hatasi" --text="Kurulum programi su hata ile baslatilamadi:\n\n$ERR_MSG" 2>/dev/null || true
+        exit $RET
+    fi
 fi
