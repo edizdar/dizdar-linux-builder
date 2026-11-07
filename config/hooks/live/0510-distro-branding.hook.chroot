@@ -62,6 +62,7 @@ fi
 # 6. Ensure desktop, installer, and application permissions
 chmod 0440 /etc/sudoers.d/* 2>/dev/null || true
 chmod 644 /etc/polkit-1/rules.d/* /etc/polkit-1/localauthority/50-local.d/* 2>/dev/null || true
-chmod 755 /etc/skel/Desktop/*.desktop /usr/share/applications/dizdar-*.desktop /usr/local/bin/* 2>/dev/null || true
+chmod -R 755 /etc/skel /etc/xdg/xfce4 /usr/local/bin /usr/share/applications 2>/dev/null || true
+chmod 755 /etc/skel/Desktop/*.desktop /usr/share/applications/*.desktop /usr/local/bin/* 2>/dev/null || true
 
 echo "=== Distro Branding Applied Successfully ==="

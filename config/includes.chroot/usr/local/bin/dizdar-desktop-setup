@@ -13,8 +13,8 @@ xhost +local:root >/dev/null 2>&1 || true
 xhost +si:localuser:root >/dev/null 2>&1 || true
 xhost + >/dev/null 2>&1 || true
 
-# Oturum acildiktan sonra panel icin kisa bekleme
-sleep 2
+# Oturum acildiktan sonra kisa bekleme
+sleep 1
 
 # 1. Turkce klavye
 setxkbmap tr || true
@@ -39,25 +39,7 @@ xfconf-query -c xfwm4 -p /general/button_layout -s "O|HMC" --create -t string ||
 xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
 xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual-1/workspace0/last-image -s "/usr/share/backgrounds/dizdar_wallpaper.jpg" --create -t string || true
 
-# 6. Whisker Baslat Menusu: Kolay erisimli Windows tarzi favoriler
-xfconf-query -c xfce4-panel -p /plugins/plugin-2/favorites -a \
-  -s "dizdar-kur.desktop" \
-  -s "thunar.desktop" \
-  -s "firefox-esr.desktop" \
-  -s "xfce4-terminal.desktop" \
-  -s "gnome-software.desktop" \
-  -s "xfce4-settings-manager.desktop" \
-  -s "dizdar-shutdown.desktop" \
-  -s "dizdar-reboot.desktop" \
-  -s "dizdar-logout.desktop" \
-  -t string -t string -t string -t string -t string -t string -t string -t string -t string || true
-
-xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-logout -s true --create -t bool || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-2/command-logout -s "xfce4-session-logout" --create -t string || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-lockscreen -s true --create -t bool || true
-xfconf-query -c xfce4-panel -p /plugins/plugin-2/show-command-switchuser -s false --create -t bool || true
-
-# 7. Masaustu simgeleri icin yetkilendirme ve guven izinleri (Guvenilmeyen uygulama uyarilarini onler)
+# 6. Masaustu simgeleri icin yetkilendirme ve guven izinleri
 chmod +x /etc/skel/Desktop/*.desktop /usr/share/applications/*.desktop /usr/local/bin/* 2>/dev/null || true
 if [ -d "$HOME/Desktop" ]; then
     chmod +x "$HOME/Desktop"/*.desktop 2>/dev/null || true
