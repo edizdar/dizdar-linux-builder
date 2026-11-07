@@ -12,3 +12,5 @@ cache/
 # General OS temp files
 .DS_Store
 Thumbs.db
+
+dizdar_disk.qcow2

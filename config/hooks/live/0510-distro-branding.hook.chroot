@@ -63,6 +63,7 @@ if command -v update-initramfs >/dev/null 2>&1; then
 fi
 
 # 6. Ensure desktop and application permissions
+chmod 0440 /etc/sudoers.d/* 2>/dev/null || true
 chmod +x /etc/skel/Desktop/*.desktop /usr/share/applications/dizdar-*.desktop /usr/local/bin/* 2>/dev/null || true
 
 echo "=== Distro Branding Applied Successfully ==="
