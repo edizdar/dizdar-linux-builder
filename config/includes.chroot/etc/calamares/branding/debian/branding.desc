@@ -1,0 +1,35 @@
+---
+componentName:  debian
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 800px,520px
+windowPlacement: center
+
+strings:
+    productName:         Dizdar Linux
+    shortProductName:    Dizdar Linux
+    version:             1.0
+    shortVersion:        1.0
+    versionedName:       Dizdar Linux 1.0
+    shortVersionedName:  Dizdar Linux 1.0
+    bootloaderEntryName: Dizdar Linux
+    productUrl:          https://github.com/edizdar/dizdar-linux-builder
+    supportUrl:          https://github.com/edizdar/dizdar-linux-builder/issues
+    knownIssuesUrl:      https://github.com/edizdar/dizdar-linux-builder/issues
+    releaseNotesUrl:     https://github.com/edizdar/dizdar-linux-builder
+
+images:
+    productLogo:         "debian-logo.png"
+    productIcon:         "debian-logo.png"
+    productWelcome:      "welcome.png"
+
+slideshow:               "show.qml"
+
+style:
+   sidebarBackground:    "#1e293b"
+   sidebarText:          "#FFFFFF"
+   sidebarTextSelect:    "#2563eb"
+   sidebarTextHighlight: "#3b82f6"
+
+slideshowAPI: 2

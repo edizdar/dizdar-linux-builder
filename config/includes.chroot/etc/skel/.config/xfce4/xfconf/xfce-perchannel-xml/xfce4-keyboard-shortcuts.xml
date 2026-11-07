@@ -7,6 +7,7 @@
       <property name="Super_L" type="string" value="xfce4-popup-whiskermenu"/>
       <property name="&lt;Super&gt;r" type="string" value="xfce4-appfinder"/>
       <property name="&lt;Super&gt;l" type="string" value="xflock4"/>
+      <property name="&lt;Primary&gt;&lt;Alt&gt;t" type="string" value="xfce4-terminal"/>
     </property>
   </property>
   <property name="xfwm4" type="empty">

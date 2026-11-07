@@ -7,5 +7,5 @@ Exec=xfce4-session-logout --reboot
 Icon=system-reboot
 Terminal=false
 Categories=System;Utility;
-Keywords=yeniden;reboot;restart;baslat;
+Keywords=yeniden;baslat;reboot;restart;
 StartupNotify=false

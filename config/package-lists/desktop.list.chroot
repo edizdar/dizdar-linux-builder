@@ -73,6 +73,9 @@ e2fsprogs
 parted
 gdisk
 rsync
+squashfs-tools
+btrfs-progs
+xfsprogs
 firefox-esr-l10n-tr
 console-setup
 keyboard-configuration

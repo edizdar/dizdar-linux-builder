@@ -2,10 +2,10 @@
 Version=1.0
 Type=Application
 Name=Oturumu Kapat
-Comment=Mevcut Oturumu Kapat
+Comment=Mevcut Kullanıcı Oturumunu Kapat
 Exec=xfce4-session-logout --logout
 Icon=system-log-out
 Terminal=false
 Categories=System;Utility;
-Keywords=cikis;logout;oturum;kapat;
+Keywords=oturumu;kapat;logout;cikis;
 StartupNotify=false

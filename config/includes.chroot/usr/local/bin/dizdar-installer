@@ -1,31 +1,44 @@
 #!/bin/bash
-# Dizdar Linux Calamares Launcher - Tam Korumali ve Hata Bildirimli
+# Dizdar Linux Calamares Launcher - Tam Korumali ve Guvenli
 
-LOGFILE="/tmp/calamares-launch.log"
+LOGFILE="/var/log/calamares-dizdar.log"
 exec > >(tee -a "$LOGFILE") 2>&1
 
-echo "=== Dizdar Linux Kurulum Baslatildi: $(date) ==="
-echo "Kullanici: $(whoami) (UID: $(id -u)), DISPLAY: $DISPLAY"
+echo "========================================================"
+echo "  Dizdar Linux Kurulum Yoneticisi Baslatiliyor"
+echo "  Tarih: $(date)"
+echo "  Kullanici: $(whoami) (UID: $(id -u))"
+echo "  DISPLAY: $DISPLAY"
+echo "========================================================"
 
-# 1. X11 Erisim Yetkileri
-xhost +local:root >/dev/null 2>&1 || true
-xhost + >/dev/null 2>&1 || true
-
-# 2. Root kullanicisi icin XAUTHORITY hazirla
-export DISPLAY="${DISPLAY:-:0}"
-if [ -n "$XAUTHORITY" ] && [ -f "$XAUTHORITY" ]; then
-    sudo cp "$XAUTHORITY" /root/.Xauthority 2>/dev/null || true
-    sudo chmod 644 /root/.Xauthority 2>/dev/null || true
-    export XAUTHORITY="/root/.Xauthority"
-elif [ -f "$HOME/.Xauthority" ]; then
-    sudo cp "$HOME/.Xauthority" /root/.Xauthority 2>/dev/null || true
-    sudo chmod 644 /root/.Xauthority 2>/dev/null || true
-    export XAUTHORITY="/root/.Xauthority"
+# 1. Stale fstab temizligi (Debian live-build kaynakli bolumleme sorununu onler)
+if [ -f /etc/fstab ]; then
+    echo "Gecici live fstab dosyasi calamares icin yedekleniyor..."
+    sudo mv /etc/fstab /etc/fstab.orig.calamares 2>/dev/null || true
 fi
 
+# Cikis aninda fstab dosyasini geri yukle
+cleanup() {
+    if [ -f /etc/fstab.orig.calamares ]; then
+        sudo mv /etc/fstab.orig.calamares /etc/fstab 2>/dev/null || true
+    fi
+}
+trap cleanup EXIT INT TERM
+
+# 2. X11 Erisim Yetkilerini Guvenceye Al
+export DISPLAY="${DISPLAY:-:0}"
+xhost +local:root >/dev/null 2>&1 || true
+xhost +si:localuser:root >/dev/null 2>&1 || true
+xhost + >/dev/null 2>&1 || true
+
+# 3. Qt ve Ekran Ayarlari
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
 export QT_QPA_PLATFORM=xcb
 
-# 3. Calamares calistirilabilir dosyasini bul
+# 4. Onceki kalan calamares sureclerini temizle
+killall -9 calamares 2>/dev/null || true
+
+# 5. Calamares calistirilabilir dosyasini bul
 CALAMARES_BIN=""
 if [ -x /usr/bin/calamares ]; then
     CALAMARES_BIN="/usr/bin/calamares"
@@ -36,35 +49,43 @@ elif command -v calamares >/dev/null 2>&1; then
 fi
 
 if [ -z "$CALAMARES_BIN" ]; then
-    echo "HATA: Calamares programi sistemde bulunamadi!"
-    zenity --error --title="Dizdar Linux Kurulum" --text="Calamares yukleyici programi sistemde bulunamadi!" 2>/dev/null || true
+    echo "HATA: Calamares yukleyicisi bulunamadi!"
+    zenity --error --title="Dizdar Linux Kurulum" --text="Calamares yukleyici programi sistemde bulunamadi!" --width=400 2>/dev/null || true
     exit 1
 fi
 
-echo "Calamares bulundu: $CALAMARES_BIN"
+echo "Calamares baslatiliyor: $CALAMARES_BIN"
 
-# 4. Onceki kalan calamares sureclerini temizle
-killall -9 calamares 2>/dev/null || true
-
-# 5. Calamares'i superuser haklariyla baslat
+# 6. Calamares'i superuser haklariyla baslat
 if [ "$(id -u)" -eq 0 ]; then
     $CALAMARES_BIN -d "$@"
+    RET=$?
 else
-    # Oncelikle sudo ile calistir
-    sudo -E $CALAMARES_BIN -d "$@"
+    # Sudo ile baslat (NOPASSWD)
+    sudo env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" QT_QPA_PLATFORM=xcb QT_AUTO_SCREEN_SCALE_FACTOR=1 $CALAMARES_BIN -d "$@"
     RET=$?
     
-    # Eger sudo basarisiz olduysa pkexec ile dene
+    # Eger sudo basarisiz olduysa pkexec ile yedek dene
     if [ $RET -ne 0 ] && command -v pkexec >/dev/null 2>&1; then
-        echo "Sudo cikis kodu: $RET. pkexec ile tekrar deneniyor..."
-        pkexec env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" $CALAMARES_BIN -d "$@"
+        echo "Sudo basarisiz oldu (kod: $RET), pkexec deneniyor..."
+        pkexec env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" QT_QPA_PLATFORM=xcb QT_AUTO_SCREEN_SCALE_FACTOR=1 $CALAMARES_BIN -d "$@"
         RET=$?
     fi
+fi
+
+echo "Calamares sonlandi, cikis kodu: $RET"
+
+# Eger kullanici kurulumu basariyla tamamladiysa veya kendisi kapattiysa sessizce cik
+if [ $RET -ne 0 ]; then
+    SESSION_LOG="/root/.cache/calamares/session.log"
+    if [ ! -f "$SESSION_LOG" ]; then
+        SESSION_LOG="$HOME/.cache/calamares/session.log"
+    fi
     
-    if [ $RET -ne 0 ]; then
-        echo "Calamares hata ile sonlandi, cikis kodu: $RET"
-        ERR_MSG=$(tail -n 15 "$LOGFILE")
-        zenity --error --title="Kurulum Hatasi" --text="Kurulum programi su hata ile baslatilamadi:\n\n$ERR_MSG" 2>/dev/null || true
-        exit $RET
+    if grep -q "Installation cancelled" "$SESSION_LOG" 2>/dev/null; then
+        echo "Kullanici kurulumu iptal etti."
+        exit 0
     fi
 fi
+
+exit $RET
