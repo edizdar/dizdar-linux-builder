@@ -1,4 +1,4 @@
-favorites=dizdar-shutdown.desktop,dizdar-reboot.desktop,dizdar-logout.desktop,firefox-esr.desktop,thunar.desktop,gnome-software.desktop,xfce4-settings-manager.desktop
+favorites=dizdar-shutdown.desktop,dizdar-reboot.desktop,dizdar-logout.desktop,thunar.desktop,xfce4-terminal.desktop,firefox-esr.desktop,gnome-software.desktop,xfce4-settings-manager.desktop,xfce4-taskmanager.desktop,mousepad.desktop
 button-title=Dizdar Linux
 button-icon=dizdar-logo
 button-title-visible=false

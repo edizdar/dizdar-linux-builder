@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Görev Yöneticisi
+Name[tr]=Görev Yöneticisi
+Comment=Çalışan işlemleri ve sistem performansını izleyin
+Exec=xfce4-taskmanager
+Icon=org.xfce.taskmanager
+Terminal=false
+Categories=System;

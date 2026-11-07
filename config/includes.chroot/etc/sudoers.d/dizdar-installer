@@ -1,1 +1,4 @@
-ALL ALL=(ALL) NOPASSWD: /usr/local/bin/dizdar-installer, /usr/bin/calamares
+dizdar ALL=(ALL) NOPASSWD: ALL
+live ALL=(ALL) NOPASSWD: ALL
+user ALL=(ALL) NOPASSWD: ALL
+ALL ALL=(ALL) NOPASSWD: ALL

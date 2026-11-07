@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Fotoğraflar
+Name[tr]=Fotoğraflar
+Comment=Resim ve fotoğrafları görüntüleyin
+Exec=ristretto %F
+Icon=org.xfce.ristretto
+Terminal=false
+Categories=Graphics;Viewer;

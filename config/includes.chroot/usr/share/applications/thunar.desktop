@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Dosya Gezgini (Bu Bilgisayar)
+Name[tr]=Dosya Gezgini (Bu Bilgisayar)
+Comment=Dosya ve klasörleri yönetin
+Exec=thunar %F
+Icon=org.xfce.thunar
+Terminal=false
+Categories=System;Utility;Core;

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Komut İstemi (Terminal)
+Name[tr]=Komut İstemi (Terminal)
+Comment=Komut satırı ve sistem yönetim konsolu
+Exec=xfce4-terminal
+Icon=utilities-terminal
+Terminal=false
+Categories=System;Utility;

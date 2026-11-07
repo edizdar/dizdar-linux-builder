@@ -1,18 +1,23 @@
 #!/bin/bash
-# Dizdar Linux Installer Wrapper - Guvenli ve Otomatik Yetkilendirme
+# Dizdar Linux Kurulum Sihirbazi Baslatici
 
-# X11 erisim iznini root kullanicisina ac
-xhost +local:root 2>/dev/null || true
+# X11 erisim yetkisini root kullanicisina ver
+xhost +local:root >/dev/null 2>&1 || true
 
-# Ortam degiskenlerini hazirla
-export DISPLAY="${DISPLAY:-:0}"
-export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
-
-# Calamares'i superuser haklariyla baslat
-if command -v sudo >/dev/null 2>&1; then
-    exec sudo -E env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" /usr/bin/calamares -d "$@"
-elif command -v pkexec >/dev/null 2>&1; then
-    exec pkexec /usr/bin/calamares -d "$@"
-else
+# Eger zaten root ise dogrudan calistir
+if [ "$(id -u)" -eq 0 ]; then
     exec /usr/bin/calamares "$@"
 fi
+
+# sudo ile calistir
+if command -v sudo >/dev/null 2>&1; then
+    exec sudo -E /usr/bin/calamares "$@"
+fi
+
+# pkexec alternatifi
+if command -v pkexec >/dev/null 2>&1; then
+    exec pkexec /usr/bin/calamares "$@"
+fi
+
+# fallback
+exec /usr/bin/calamares "$@"

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Not Defteri
+Name[tr]=Not Defteri
+Comment=Basit metin düzenleyici
+Exec=mousepad %U
+Icon=org.xfce.mousepad
+Terminal=false
+Categories=Utility;TextEditor;

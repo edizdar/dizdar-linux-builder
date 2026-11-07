@@ -164,6 +164,10 @@ jobs:
         run: |
           chmod +x build.sh
           chmod -R +x config/hooks/ || true
+          chmod -R 755 config/includes.chroot/usr/local/bin/ || true
+          chmod -R 755 config/includes.chroot/etc/skel/Desktop/ || true
+          chmod -R 755 config/includes.chroot/usr/share/applications/ || true
+          chmod 0440 config/includes.chroot/etc/sudoers.d/* || true
 
       - name: Build ISO
         run: |
