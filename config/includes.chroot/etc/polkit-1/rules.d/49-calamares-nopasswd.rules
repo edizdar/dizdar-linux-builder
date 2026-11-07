@@ -1,0 +1,6 @@
+/* Allow Calamares to run without authentication in live session */
+polkit.addRule(function(action, subject) {
+    if (action.id.indexOf("calamares") !== -1 || action.id == "org.freedesktop.policykit.exec") {
+        return polkit.Result.YES;
+    }
+});

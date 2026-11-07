@@ -1,23 +1,24 @@
 #!/bin/bash
-# Dizdar Linux Kurulum Sihirbazi Baslatici
+# Dizdar Linux Calamares Baslatici
 
-# X11 erisim yetkisini root kullanicisina ver
+# X11 Display yetkisi
 xhost +local:root >/dev/null 2>&1 || true
+xhost + >/dev/null 2>&1 || true
 
-# Eger zaten root ise dogrudan calistir
-if [ "$(id -u)" -eq 0 ]; then
-    exec /usr/bin/calamares "$@"
+export DISPLAY="${DISPLAY:-:0}"
+export XAUTHORITY="${XAUTHORITY:-$HOME/.Xauthority}"
+
+# Eger calamares komutu varsa dogrudan calistir
+if [ -x /usr/bin/calamares ]; then
+    if [ "$(id -u)" -eq 0 ]; then
+        exec /usr/bin/calamares "$@"
+    elif command -v pkexec >/dev/null 2>&1; then
+        exec pkexec /usr/bin/calamares "$@"
+    elif command -v sudo >/dev/null 2>&1; then
+        exec sudo -E /usr/bin/calamares "$@"
+    else
+        exec /usr/bin/calamares "$@"
+    fi
+elif [ -x /usr/bin/install-debian ]; then
+    exec /usr/bin/install-debian "$@"
 fi
-
-# sudo ile calistir
-if command -v sudo >/dev/null 2>&1; then
-    exec sudo -E /usr/bin/calamares "$@"
-fi
-
-# pkexec alternatifi
-if command -v pkexec >/dev/null 2>&1; then
-    exec pkexec /usr/bin/calamares "$@"
-fi
-
-# fallback
-exec /usr/bin/calamares "$@"

@@ -1,0 +1,6 @@
+[Calamares Installer]
+Identity=unix-user:*
+Action=*calamares*;org.freedesktop.policykit.exec
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes

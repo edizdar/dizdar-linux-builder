@@ -168,6 +168,7 @@ jobs:
           chmod -R 755 config/includes.chroot/etc/skel/Desktop/ || true
           chmod -R 755 config/includes.chroot/usr/share/applications/ || true
           chmod 0440 config/includes.chroot/etc/sudoers.d/* || true
+          chmod -R 644 config/includes.chroot/etc/polkit-1/ || true
 
       - name: Build ISO
         run: |
