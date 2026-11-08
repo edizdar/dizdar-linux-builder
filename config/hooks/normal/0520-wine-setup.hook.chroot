@@ -5,15 +5,18 @@ set -e
 echo "=== Configuring Wine (Windows Compatibility) & Waydroid (Android Compatibility) ==="
 
 # 1. Enable 32-bit architecture for Wine32 (required for most Windows apps)
-dpkg --add-architecture i386
+dpkg --add-architecture i386 || true
 
 # 2. Add Waydroid Official Repository
 export DEBIAN_FRONTEND=noninteractive
-curl -fsSL https://repo.waydro.id/waydroid.gpg -o /usr/share/keyrings/waydroid.gpg
-echo "deb [signed-by=/usr/share/keyrings/waydroid.gpg] https://repo.waydro.id/ bookworm main" > /etc/apt/sources.list.d/waydroid.list
+mkdir -p /usr/share/keyrings /etc/apt/sources.list.d
+curl -fsSL https://repo.waydro.id/waydroid.gpg -o /usr/share/keyrings/waydroid.gpg 2>/dev/null || true
+if [ -f /usr/share/keyrings/waydroid.gpg ]; then
+    echo "deb [signed-by=/usr/share/keyrings/waydroid.gpg] https://repo.waydro.id/ bookworm main" > /etc/apt/sources.list.d/waydroid.list
+fi
 
 # 3. Update Package lists
-apt-get update
+apt-get update || true
 
 # 4. Install Wine, Wine32, Wine64, Winetricks, Zenity, Weston (for X11 Wayland support) and Waydroid
 apt-get install -y \
@@ -24,7 +27,7 @@ apt-get install -y \
     waydroid \
     weston \
     zenity \
-    pkexec
+    pkexec 2>/dev/null || true
 
 # 5. Set up system-wide Wine file associations (.exe opens with Wine automatically)
 mkdir -p /etc/xdg
@@ -37,5 +40,6 @@ application/x-ms-shortcut=wine.desktop
 EOF
 
 chmod +x /usr/local/bin/dizdar-android-launcher 2>/dev/null || true
+chmod +x /usr/local/bin/dizdar-installer 2>/dev/null || true
 
 echo "=== Wine and Waydroid Configuration Completed ==="

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Dizdar Linux Calamares Launcher - Tam Korumali ve Guvenli
 
-LOGFILE="/var/log/calamares-dizdar.log"
+LOGFILE="/tmp/calamares-dizdar.log"
 exec > >(tee -a "$LOGFILE") 2>&1
 
 echo "========================================================"
@@ -62,7 +62,7 @@ if [ "$(id -u)" -eq 0 ]; then
     RET=$?
 else
     # Sudo ile baslat (NOPASSWD)
-    sudo env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" QT_QPA_PLATFORM=xcb QT_AUTO_SCREEN_SCALE_FACTOR=1 $CALAMARES_BIN -d "$@"
+    sudo -E DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" QT_QPA_PLATFORM=xcb QT_AUTO_SCREEN_SCALE_FACTOR=1 $CALAMARES_BIN -d "$@"
     RET=$?
     
     # Eger sudo basarisiz olduysa pkexec ile yedek dene

@@ -1,22 +1,53 @@
 #!/bin/bash
 # Dizdar Linux - Android Uygulama Baslatici (Waydroid / Weston Uyumlu)
 
-echo "=== Dizdar Linux Android Uygulama Baslatici ==="
+export DISPLAY="${DISPLAY:-:0}"
+LOGFILE="/tmp/dizdar-android.log"
+exec > >(tee -a "$LOGFILE") 2>&1
 
-# 1. Waydroid yuklu mu kontrol et
+echo "=== Dizdar Linux Android Uygulama Baslatici ==="
+echo "Tarih: $(date)"
+
+# 1. Waydroid paket kontrolu
 if ! command -v waydroid >/dev/null 2>&1; then
-    zenity --error \
+    zenity --question \
         --title="Android Desteği" \
-        --text="Waydroid paketi sistemde bulunamadı. Lütfen paket yöneticisinden waydroid paketini kurun." \
-        --width=400 2>/dev/null || true
-    exit 1
+        --text="Dizdar Linux Android Desteği (Waydroid) henüz kurulu değil.\n\nOtomatik olarak indirilip kurulmasını istiyor musunuz?\n(İnternet bağlantısı gereklidir)" \
+        --ok-label="Evet, Kur" \
+        --cancel-label="İptal" \
+        --width=420 2>/dev/null
+
+    if [ $? -ne 0 ]; then
+        exit 0
+    fi
+
+    (
+        echo "# Waydroid paketi kuruluyor..."
+        sudo DEBIAN_FRONTEND=noninteractive apt-get update
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y waydroid weston
+    ) | zenity --progress \
+        --title="Android Paketi Kuruluyor" \
+        --text="Waydroid bileşenleri indiriliyor, lütfen bekleyin..." \
+        --pulsate \
+        --auto-close \
+        --no-cancel 2>/dev/null
+
+    if ! command -v waydroid >/dev/null 2>&1; then
+        zenity --error \
+            --title="Kurulum Hatası" \
+            --text="Waydroid paketi kurulamadı. Lütfen internet bağlantınızı kontrol edip tekrar deneyin." \
+            --width=400 2>/dev/null || true
+        exit 1
+    fi
 fi
 
-# 2. Waydroid ilk kurulumu yapilmis mi?
-if [ ! -d /var/lib/waydroid/images ]; then
+# 2. Waydroid imaj dosyalarinin kontrolu
+if [ ! -d /var/lib/waydroid/images ] || [ ! -f /var/lib/waydroid/images/system.img ]; then
     zenity --question \
-        --title="Android Uygulama Desteği" \
-        --text="Android Uyumluluk Katmanı (Waydroid) henüz başlatılmamış.\n\nİlk kullanımda yaklaşık 800 MB Android sistem dosyası indirilecektir.\n\nİndirme ve kurulum işlemini başlatmak istiyor musunuz?\n(Not: İnternet bağlantınız olmalıdır)" \
+        --title="Android Sistemi Başlatma" \
+        --text="Android Uyumluluk Katmanı ilk kez hazırlanıyor.\n\nİlk kullanımda yaklaşık 800 MB Android sistem dosyası indirilecektir.\n\nİndirme işlemini başlatmak istiyor musunuz?\n(İnternet hızınıza bağlı olarak birkaç dakika sürebilir)" \
+        --ok-label="İndir ve Başlat" \
+        --cancel-label="İptal" \
         --width=450 2>/dev/null
 
     if [ $? -ne 0 ]; then
@@ -24,48 +55,49 @@ if [ ! -d /var/lib/waydroid/images ]; then
     fi
 
     (
-        echo "# Android imajları indiriliyor ve kuruluyor. Lütfen bekleyin..."
-        pkexec waydroid init -s GAPPS -f 2>&1
+        echo "# Android sistem imajı indiriliyor..."
+        sudo waydroid init -s GAPPS -f 2>&1
     ) | zenity --progress \
-        --title="Android Sistemi Kuruluyor" \
-        --text="Android bileşenleri hazırlanıyor..." \
+        --title="Android Sistemi Hazırlanıyor" \
+        --text="Android sistem dosyaları indiriliyor, lütfen bekleyin..." \
         --pulsate \
         --auto-close \
         --no-cancel 2>/dev/null
 
-    if [ $? -ne 0 ]; then
+    if [ ! -f /var/lib/waydroid/images/system.img ]; then
         zenity --error \
-            --title="Kurulum Hatası" \
-            --text="Android sistemi indirilirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edip tekrar deneyin." \
-            --width=400 2>/dev/null || true
+            --title="Android İndirme Hatası" \
+            --text="Android sistem dosyaları indirilemedi. Lütfen internet bağlantınızı kontrol edin." \
+            --width=420 2>/dev/null || true
         exit 1
     fi
 
     zenity --info \
-        --title="Kurulum Tamamlandı" \
+        --title="Hazır!" \
         --text="Android sistemi başarıyla hazırlandı! Açılıyor..." \
         --timeout=3 \
         --width=350 2>/dev/null || true
 fi
 
-# 3. Container servisini baslat
-pkexec systemctl start waydroid-container 2>/dev/null || true
+# 3. Waydroid container servisini baslat
+sudo systemctl start waydroid-container 2>/dev/null || true
 
-# 4. Ortam kontrolu (Wayland mi X11 mi?)
+# 4. Wayland / Weston ortamini hazirla
 if [ -z "$WAYLAND_DISPLAY" ]; then
-    # X11 (XFCE) oturumu altindayiz, Weston gereklidir
-    echo "X11 oturumu tespit edildi, Weston nested compositor baslatiliyor..."
-    
+    echo "X11 oturumu tespit edildi, Weston başlatılıyor..."
     if ! pgrep -x "weston" >/dev/null 2>&1; then
         if command -v weston >/dev/null 2>&1; then
             weston --width=1024 --height=768 --shell=kiosk-shell.so &
             sleep 2
-        else
-            echo "Weston bulunamadi, dogrudan deneniyor..."
         fi
     fi
-    export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
+    export WAYLAND_DISPLAY="wayland-1"
 fi
 
-# 5. Android arayuzunu baslat
+# 5. Waydroid arayuzunu ac
+waydroid session start 2>/dev/null &
+sleep 2
 waydroid show-full-ui &
+
+echo "Android baslatildi."
+exit 0

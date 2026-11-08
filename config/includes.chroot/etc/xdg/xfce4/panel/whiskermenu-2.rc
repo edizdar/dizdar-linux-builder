@@ -1,6 +1,6 @@
 favorites=dizdar-shutdown.desktop,dizdar-reboot.desktop,dizdar-logout.desktop,firefox-esr.desktop,thunar.desktop,dizdar-android.desktop,gnome-software.desktop,xfce4-settings-manager.desktop
-button-title=Dizdar Linux
-button-icon=dizdar-logo
+button-title=Başlat
+button-icon=/usr/share/pixmaps/dizdar-logo.png
 button-title-visible=false
 button-icon-visible=true
 show-generic-names=true

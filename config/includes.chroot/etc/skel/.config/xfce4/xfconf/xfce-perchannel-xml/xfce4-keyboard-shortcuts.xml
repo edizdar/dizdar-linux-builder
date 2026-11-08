@@ -5,6 +5,7 @@
       <property name="&lt;Super&gt;e" type="string" value="thunar"/>
       <property name="&lt;Primary&gt;&lt;Shift&gt;Escape" type="string" value="xfce4-taskmanager"/>
       <property name="Super_L" type="string" value="xfce4-popup-whiskermenu"/>
+      <property name="&lt;Primary&gt;Escape" type="string" value="xfce4-popup-whiskermenu"/>
       <property name="&lt;Super&gt;r" type="string" value="xfce4-appfinder"/>
       <property name="&lt;Super&gt;l" type="string" value="xflock4"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;t" type="string" value="xfce4-terminal"/>

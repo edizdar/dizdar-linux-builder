@@ -21,46 +21,42 @@
         <value type="int" value="6"/>
         <value type="int" value="7"/>
         <value type="int" value="8"/>
-        <value type="int" value="9"/>
       </property>
     </property>
   </property>
   <property name="plugins" type="empty">
-    <property name="plugin-1" type="string" value="separator">
-      <property name="style" type="uint" value="0"/>
-      <property name="expand" type="bool" value="true"/>
-    </property>
-    <property name="plugin-2" type="string" value="whiskermenu">
-      <property name="button-icon" type="string" value="dizdar-logo"/>
+    <property name="plugin-1" type="string" value="whiskermenu">
+      <property name="button-icon" type="string" value="/usr/share/pixmaps/dizdar-logo.png"/>
+      <property name="button-title" type="string" value="Başlat"/>
       <property name="show-button-title" type="bool" value="false"/>
       <property name="show-button-icon" type="bool" value="true"/>
     </property>
-    <property name="plugin-3" type="string" value="tasklist">
+    <property name="plugin-2" type="string" value="tasklist">
       <property name="show-labels" type="bool" value="false"/>
       <property name="grouping" type="uint" value="1"/>
       <property name="flat-buttons" type="bool" value="true"/>
       <property name="sort-order" type="uint" value="0"/>
       <property name="include-all-monitors" type="bool" value="true"/>
     </property>
-    <property name="plugin-4" type="string" value="separator">
+    <property name="plugin-3" type="string" value="separator">
       <property name="style" type="uint" value="0"/>
       <property name="expand" type="bool" value="true"/>
     </property>
-    <property name="plugin-5" type="string" value="systray">
+    <property name="plugin-4" type="string" value="systray">
       <property name="names-ordered" type="array">
         <value type="string" value="network-manager-gnome"/>
         <value type="string" value="xfce4-power-manager"/>
       </property>
     </property>
-    <property name="plugin-6" type="string" value="pulseaudio">
+    <property name="plugin-5" type="string" value="pulseaudio">
       <property name="enable-keyboard-shortcuts" type="bool" value="true"/>
       <property name="show-notifications" type="bool" value="true"/>
     </property>
-    <property name="plugin-7" type="string" value="power-manager-plugin"/>
-    <property name="plugin-8" type="string" value="clock">
+    <property name="plugin-6" type="string" value="power-manager-plugin"/>
+    <property name="plugin-7" type="string" value="clock">
       <property name="digital-layout" type="uint" value="3"/>
       <property name="mode" type="uint" value="2"/>
     </property>
-    <property name="plugin-9" type="string" value="showdesktop"/>
+    <property name="plugin-8" type="string" value="showdesktop"/>
   </property>
 </channel>

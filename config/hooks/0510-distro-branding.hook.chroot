@@ -33,14 +33,22 @@ if [ -d /etc/calamares/branding/debian ]; then
     fi
 fi
 
-# 4. Clean up default Debian menu shortcuts/branding
+# 4. Icon Theme Integration for Dizdar Logo
+mkdir -p /usr/share/icons/hicolor/48x48/apps /usr/share/icons/hicolor/128x128/apps /usr/share/icons/hicolor/256x256/apps /usr/share/icons/hicolor/scalable/apps
+if [ -f /usr/share/pixmaps/dizdar-logo.png ]; then
+    cp -f /usr/share/pixmaps/dizdar-logo.png /usr/share/icons/hicolor/48x48/apps/dizdar-logo.png 2>/dev/null || true
+    cp -f /usr/share/pixmaps/dizdar-logo.png /usr/share/icons/hicolor/128x128/apps/dizdar-logo.png 2>/dev/null || true
+    cp -f /usr/share/pixmaps/dizdar-logo.png /usr/share/icons/hicolor/256x256/apps/dizdar-logo.png 2>/dev/null || true
+fi
+
+# 5. Clean up default Debian menu shortcuts/branding
 if [ -f /usr/share/desktop-directories/debian-menu.directory ]; then
     rm -f /usr/share/desktop-directories/debian-menu.directory
 fi
 rm -f /etc/skel/Desktop/install-debian.desktop || true
 rm -f /usr/share/applications/install-debian.desktop || true
 
-# 5. Plymouth Boot Animation Branding
+# 6. Plymouth Boot Animation Branding
 echo "Purging all Debian artwork from desktop-base and plymouth..."
 WATERMARK="/usr/share/plymouth/themes/spinner/watermark.png"
 LOGO="/usr/share/pixmaps/dizdar-logo.png"
@@ -59,7 +67,7 @@ if command -v update-initramfs >/dev/null 2>&1; then
     update-initramfs -u -k all || true
 fi
 
-# 6. GRUB OS-Prober and Fast Boot Optimizations
+# 7. GRUB OS-Prober and Fast Boot Optimizations
 if [ -f /etc/default/grub ]; then
     sed -i 's/^#GRUB_DISABLE_OS_PROBER=false/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub || true
     grep -q "GRUB_DISABLE_OS_PROBER=false" /etc/default/grub || echo "GRUB_DISABLE_OS_PROBER=false" >> /etc/default/grub
@@ -67,7 +75,7 @@ fi
 systemctl mask NetworkManager-wait-online.service 2>/dev/null || true
 systemctl mask systemd-networkd-wait-online.service 2>/dev/null || true
 
-# 7. Ensure desktop, installer, and application permissions
+# 8. Ensure desktop, installer, and application permissions
 chmod 0440 /etc/sudoers.d/* 2>/dev/null || true
 chmod 644 /etc/polkit-1/rules.d/* /etc/polkit-1/localauthority/50-local.d/* 2>/dev/null || true
 chmod -R 755 /etc/skel /etc/xdg/xfce4 /usr/local/bin /usr/share/applications 2>/dev/null || true
