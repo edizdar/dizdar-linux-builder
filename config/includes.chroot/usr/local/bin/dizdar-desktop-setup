@@ -19,6 +19,15 @@ sleep 1
 # 1. Turkce klavye
 setxkbmap tr || true
 
+# Canli kurulum sirasinda ekranin kararmasini onle
+xset s off 2>/dev/null || true
+xset -dpms 2>/dev/null || true
+xset s noblank 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/blank-on-ac -s 0 --create -t int 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-sleep -s 0 --create -t int 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-on-ac-off -s 0 --create -t int 2>/dev/null || true
+xfconf-query -c xfce4-power-manager -p /xfce4-power-manager/dpms-enabled -s false --create -t bool 2>/dev/null || true
+
 # 2. Masaustu ikonlari ayarlari (USB/disket gizle, ev/cop goster)
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-removable -s false --create -t bool || true
 xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-device -s false --create -t bool || true

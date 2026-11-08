@@ -68,6 +68,13 @@ ca-certificates
 librsvg2-bin
 calamares
 calamares-settings-debian
+grub-pc
+grub-pc-bin
+grub-efi-amd64
+grub-efi-amd64-bin
+grub-common
+efibootmgr
+os-prober
 dosfstools
 e2fsprogs
 parted
