@@ -55,4 +55,9 @@ if [ -d "$HOME/Desktop" ]; then
     gio set "$HOME/Desktop"/*.desktop metadata::trusted true 2>/dev/null || true
 fi
 
+# 7. Eger sistem zaten kurulu ise masaustundeki kurulum simgesini temizle
+if [ ! -d /run/live ]; then
+    rm -f "$HOME/Desktop/Dizdar_Linux_Kur.desktop" /etc/skel/Desktop/Dizdar_Linux_Kur.desktop /usr/share/applications/dizdar-kur.desktop 2>/dev/null || true
+fi
+
 echo "=== Desktop Setup Completed ==="

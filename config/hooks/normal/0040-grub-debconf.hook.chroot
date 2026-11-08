@@ -1,4 +1,0 @@
-#!/bin/sh
-set -e
-echo "grub-pc grub-pc/install_devices multiselect" | debconf-set-selections || true
-echo "grub-pc grub-pc/install_devices_empty boolean true" | debconf-set-selections || true
