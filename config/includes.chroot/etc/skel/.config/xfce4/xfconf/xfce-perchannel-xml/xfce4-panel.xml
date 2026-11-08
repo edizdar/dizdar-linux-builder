@@ -34,22 +34,6 @@
       <property name="button-icon" type="string" value="dizdar-logo"/>
       <property name="show-button-title" type="bool" value="false"/>
       <property name="show-button-icon" type="bool" value="true"/>
-      <property name="show-command-logout" type="bool" value="true"/>
-      <property name="command-logout" type="string" value="xfce4-session-logout"/>
-      <property name="show-command-lockscreen" type="bool" value="true"/>
-      <property name="command-lockscreen" type="string" value="xflock4"/>
-      <property name="show-command-switchuser" type="bool" value="false"/>
-      <property name="show-command-settings" type="bool" value="true"/>
-      <property name="command-settings" type="string" value="xfce4-settings-manager"/>
-      <property name="favorites" type="array">
-        <value type="string" value="dizdar-shutdown.desktop"/>
-        <value type="string" value="dizdar-reboot.desktop"/>
-        <value type="string" value="dizdar-logout.desktop"/>
-        <value type="string" value="firefox-esr.desktop"/>
-        <value type="string" value="thunar.desktop"/>
-        <value type="string" value="gnome-software.desktop"/>
-        <value type="string" value="xfce4-settings-manager.desktop"/>
-      </property>
     </property>
     <property name="plugin-3" type="string" value="tasklist">
       <property name="show-labels" type="bool" value="false"/>

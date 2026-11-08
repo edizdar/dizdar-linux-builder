@@ -1,0 +1,71 @@
+#!/bin/bash
+# Dizdar Linux - Android Uygulama Baslatici (Waydroid / Weston Uyumlu)
+
+echo "=== Dizdar Linux Android Uygulama Baslatici ==="
+
+# 1. Waydroid yuklu mu kontrol et
+if ! command -v waydroid >/dev/null 2>&1; then
+    zenity --error \
+        --title="Android Desteği" \
+        --text="Waydroid paketi sistemde bulunamadı. Lütfen paket yöneticisinden waydroid paketini kurun." \
+        --width=400 2>/dev/null || true
+    exit 1
+fi
+
+# 2. Waydroid ilk kurulumu yapilmis mi?
+if [ ! -d /var/lib/waydroid/images ]; then
+    zenity --question \
+        --title="Android Uygulama Desteği" \
+        --text="Android Uyumluluk Katmanı (Waydroid) henüz başlatılmamış.\n\nİlk kullanımda yaklaşık 800 MB Android sistem dosyası indirilecektir.\n\nİndirme ve kurulum işlemini başlatmak istiyor musunuz?\n(Not: İnternet bağlantınız olmalıdır)" \
+        --width=450 2>/dev/null
+
+    if [ $? -ne 0 ]; then
+        exit 0
+    fi
+
+    (
+        echo "# Android imajları indiriliyor ve kuruluyor. Lütfen bekleyin..."
+        pkexec waydroid init -s GAPPS -f 2>&1
+    ) | zenity --progress \
+        --title="Android Sistemi Kuruluyor" \
+        --text="Android bileşenleri hazırlanıyor..." \
+        --pulsate \
+        --auto-close \
+        --no-cancel 2>/dev/null
+
+    if [ $? -ne 0 ]; then
+        zenity --error \
+            --title="Kurulum Hatası" \
+            --text="Android sistemi indirilirken bir hata oluştu. Lütfen internet bağlantınızı kontrol edip tekrar deneyin." \
+            --width=400 2>/dev/null || true
+        exit 1
+    fi
+
+    zenity --info \
+        --title="Kurulum Tamamlandı" \
+        --text="Android sistemi başarıyla hazırlandı! Açılıyor..." \
+        --timeout=3 \
+        --width=350 2>/dev/null || true
+fi
+
+# 3. Container servisini baslat
+pkexec systemctl start waydroid-container 2>/dev/null || true
+
+# 4. Ortam kontrolu (Wayland mi X11 mi?)
+if [ -z "$WAYLAND_DISPLAY" ]; then
+    # X11 (XFCE) oturumu altindayiz, Weston gereklidir
+    echo "X11 oturumu tespit edildi, Weston nested compositor baslatiliyor..."
+    
+    if ! pgrep -x "weston" >/dev/null 2>&1; then
+        if command -v weston >/dev/null 2>&1; then
+            weston --width=1024 --height=768 --shell=kiosk-shell.so &
+            sleep 2
+        else
+            echo "Weston bulunamadi, dogrudan deneniyor..."
+        fi
+    fi
+    export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-1}"
+fi
+
+# 5. Android arayuzunu baslat
+waydroid show-full-ui &

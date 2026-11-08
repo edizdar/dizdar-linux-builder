@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Android Uygulamaları
+Comment=Android mobil uygulamalarını ve APK'ları çalıştırın
+Exec=/usr/local/bin/dizdar-android-launcher
+Icon=applications-other
+Terminal=false
+StartupNotify=false
+Categories=Utility;System;
+Keywords=android;apk;mobil;waydroid;uygulama;
