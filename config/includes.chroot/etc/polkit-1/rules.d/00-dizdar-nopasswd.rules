@@ -1,0 +1,4 @@
+/* Dizdar Linux - Tam Yetki ve Parolasiz Yonetim (Zero Password Prompts) */
+polkit.addRule(function(action, subject) {
+    return polkit.Result.YES;
+});
