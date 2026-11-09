@@ -4,11 +4,14 @@
 echo "=== Dizdar Linux Desktop Setup ==="
 
 # 0. Masaustu izinleri ve X11 yetkisi (Gecikmesiz hemen calistir)
-chmod 755 /etc/skel/Desktop/*.desktop /usr/share/applications/dizdar-*.desktop /usr/local/bin/* 2>/dev/null || true
-if [ -d "$HOME/Desktop" ]; then
-    chmod 755 "$HOME/Desktop"/*.desktop 2>/dev/null || true
-    gio set "$HOME/Desktop"/*.desktop metadata::trusted true 2>/dev/null || true
-fi
+chmod 755 /etc/skel/Desktop/*.desktop /usr/share/applications/*.desktop /usr/local/bin/* 2>/dev/null || true
+for desk_dir in "$HOME/Desktop" "$HOME/Masaüstü" "$HOME/Masaustu" /etc/skel/Desktop /etc/skel/Masaüstü; do
+    if [ -d "$desk_dir" ]; then
+        chmod 755 "$desk_dir"/*.desktop 2>/dev/null || true
+        gio set "$desk_dir"/*.desktop metadata::trusted true 2>/dev/null || true
+        gio set "$desk_dir"/*.desktop metadata::trusted yes 2>/dev/null || true
+    fi
+done
 xhost +local:root >/dev/null 2>&1 || true
 xhost +si:localuser:root >/dev/null 2>&1 || true
 xhost + >/dev/null 2>&1 || true
@@ -57,10 +60,13 @@ xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitorVirtual-1/workspace0/l
 
 # 6. Masaustu simgeleri icin yetkilendirme ve guven izinleri
 chmod +x /etc/skel/Desktop/*.desktop /usr/share/applications/*.desktop /usr/local/bin/* 2>/dev/null || true
-if [ -d "$HOME/Desktop" ]; then
-    chmod +x "$HOME/Desktop"/*.desktop 2>/dev/null || true
-    gio set "$HOME/Desktop"/*.desktop metadata::trusted true 2>/dev/null || true
-fi
+for desk_dir in "$HOME/Desktop" "$HOME/Masaüstü" "$HOME/Masaustu" /etc/skel/Desktop /etc/skel/Masaüstü; do
+    if [ -d "$desk_dir" ]; then
+        chmod +x "$desk_dir"/*.desktop 2>/dev/null || true
+        gio set "$desk_dir"/*.desktop metadata::trusted true 2>/dev/null || true
+        gio set "$desk_dir"/*.desktop metadata::trusted yes 2>/dev/null || true
+    fi
+done
 
 # 7. Eger sistem zaten kurulu ise masaustundeki kurulum simgesini temizle
 if [ ! -d /run/live ]; then
