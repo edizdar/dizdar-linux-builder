@@ -17,7 +17,7 @@ echo.
 echo Kurulu Dizdar Linux baslatiliyor, lutfen bekleyin...
 echo (Bu konsol penceresi sanal makine acik kaldigi surece acik kalacaktir)
 echo.
-"C:\Users\Dizdar\qemu\qemu-system-x86_64.exe" -m 4096 -smp 4 -hda "D:\Projeler\dizdar-linux-builder\dizdar_disk.qcow2" -netdev user,id=net0,dns=8.8.8.8 -device virtio-net-pci,netdev=net0 -vga virtio -usb -device usb-tablet -accel tcg,thread=multi -display sdl
+"C:\Users\Dizdar\qemu\qemu-system-x86_64.exe" -m 4096 -smp 4 -drive file="D:\Projeler\dizdar-linux-builder\dizdar_disk.qcow2",format=qcow2,cache=writeback -netdev user,id=net0,dns=8.8.8.8 -device virtio-net-pci,netdev=net0 -vga virtio -usb -device usb-tablet -accel tcg,thread=multi -display sdl
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo ====================================================
