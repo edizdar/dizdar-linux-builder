@@ -5,14 +5,27 @@ export DISPLAY="${DISPLAY:-:0}"
 LOGFILE="/tmp/dizdar-android.log"
 exec > >(tee -a "$LOGFILE") 2>&1
 
-echo "=== Dizdar Linux Android Uygulama Baslatici ==="
-echo "Tarih: $(date)"
+echo "========================================================"
+echo "  Dizdar Linux Android Uygulama Baslatici"
+echo "  Tarih: $(date)"
+echo "========================================================"
+
+# 0. Eski/kapanmis oturum kalintilarini temizle (Ac-kapa yapildiginda takilmayi onler)
+if pgrep -x "weston" >/dev/null 2>&1 || pgrep -f "waydroid" >/dev/null 2>&1; then
+    echo "Onceki oturum kalintilari temizleniyor..."
+    waydroid session stop 2>/dev/null || true
+    pkill -9 -f "weston" 2>/dev/null || true
+    pkill -9 -f "waydroid" 2>/dev/null || true
+    sudo rm -rf /run/waydroid/* 2>/dev/null || true
+    sudo systemctl restart waydroid-container 2>/dev/null || true
+    sleep 1
+fi
 
 # 1. Waydroid paket kontrolu
 if ! command -v waydroid >/dev/null 2>&1; then
     zenity --question \
         --title="Android Desteği" \
-        --text="Dizdar Linux Android Desteği (Waydroid) henüz kurulu değil.\n\nOtomatik olarak indirilip kurulmasını istiyor musunuz?\n(İnternet bağlantısı gereklidir)" \
+        --text="Dizdar Linux Android Desteği (Waydroid) henüz kurulu değil.\n\nOtomatik olarak kurulmasını istiyor musunuz?\n(İnternet bağlantısı gereklidir)" \
         --ok-label="Evet, Kur" \
         --cancel-label="İptal" \
         --width=420 2>/dev/null
@@ -27,7 +40,7 @@ if ! command -v waydroid >/dev/null 2>&1; then
         sudo DEBIAN_FRONTEND=noninteractive apt-get install -y waydroid weston
     ) | zenity --progress \
         --title="Android Paketi Kuruluyor" \
-        --text="Waydroid bileşenleri indiriliyor, lütfen bekleyin..." \
+        --text="Bileşenler indiriliyor, lütfen bekleyin..." \
         --pulsate \
         --auto-close \
         --no-cancel 2>/dev/null
@@ -45,7 +58,7 @@ fi
 if [ ! -d /var/lib/waydroid/images ] || [ ! -f /var/lib/waydroid/images/system.img ]; then
     zenity --question \
         --title="Android Sistemi Başlatma" \
-        --text="Android Uyumluluk Katmanı ilk kez hazırlanıyor.\n\nİlk kullanımda yaklaşık 800 MB Android sistem dosyası indirilecektir.\n\nİndirme işlemini başlatmak istiyor musunuz?\n(İnternet hızınıza bağlı olarak birkaç dakika sürebilir)" \
+        --text="Android Uyumluluk Katmanı ilk kez hazırlanıyor.\n\nİlk kullanımda Android sistem dosyaları indirilecektir.\n\nİndirme işlemini başlatmak istiyor musunuz?\n(İnternet hızınıza bağlı olarak birkaç dakika sürebilir)" \
         --ok-label="İndir ve Başlat" \
         --cancel-label="İptal" \
         --width=450 2>/dev/null
@@ -56,7 +69,8 @@ if [ ! -d /var/lib/waydroid/images ] || [ ! -f /var/lib/waydroid/images/system.i
 
     (
         echo "# Android sistem imajı indiriliyor..."
-        sudo waydroid init -s GAPPS -f 2>&1
+        # Once standart resmi hizli imaji dene, basarisiz olursa gapps ile dene
+        sudo waydroid init -f 2>&1 || sudo waydroid init -s GAPPS -f 2>&1
     ) | zenity --progress \
         --title="Android Sistemi Hazırlanıyor" \
         --text="Android sistem dosyaları indiriliyor, lütfen bekleyin..." \
@@ -67,7 +81,7 @@ if [ ! -d /var/lib/waydroid/images ] || [ ! -f /var/lib/waydroid/images/system.i
     if [ ! -f /var/lib/waydroid/images/system.img ]; then
         zenity --error \
             --title="Android İndirme Hatası" \
-            --text="Android sistem dosyaları indirilemedi. Lütfen internet bağlantınızı kontrol edin." \
+            --text="Android sistem dosyaları indirilemedi. Lütfen sanal makinenin internet bağlantısını kontrol edin." \
             --width=420 2>/dev/null || true
         exit 1
     fi
@@ -83,14 +97,14 @@ fi
 sudo systemctl start waydroid-container 2>/dev/null || true
 
 # 4. Wayland / Weston ortamini hazirla
-if [ -z "$WAYLAND_DISPLAY" ]; then
+WESTON_PID=""
+if [ -z "$WAYLAND_DISPLAY" ] || [ ! -e "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY" ]; then
     echo "X11 oturumu tespit edildi, Weston başlatılıyor..."
-    if ! pgrep -x "weston" >/dev/null 2>&1; then
-        if command -v weston >/dev/null 2>&1; then
-            weston --width=1024 --height=768 --shell=kiosk-shell.so &
-            sleep 2
-        fi
-    fi
+    pkill -9 -f "weston" 2>/dev/null || true
+    sleep 0.5
+    weston --width=1024 --height=768 --shell=kiosk-shell.so &
+    WESTON_PID=$!
+    sleep 2
     export WAYLAND_DISPLAY="wayland-1"
 fi
 
@@ -99,5 +113,13 @@ waydroid session start 2>/dev/null &
 sleep 2
 waydroid show-full-ui &
 
-echo "Android baslatildi."
+# 6. Weston kapandiginda temizligi otomatik yap
+if [ -n "$WESTON_PID" ]; then
+    wait $WESTON_PID 2>/dev/null || true
+    echo "Weston penceresi kapatildi, arka plan temizleniyor..."
+    waydroid session stop 2>/dev/null || true
+    pkill -9 -f "waydroid" 2>/dev/null || true
+fi
+
+echo "Android islemi tamamlandi."
 exit 0

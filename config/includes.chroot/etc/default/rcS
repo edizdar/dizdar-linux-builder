@@ -1,0 +1,2 @@
+# Automatically fix filesystem issues on boot without prompting
+FSCKFIX=yes

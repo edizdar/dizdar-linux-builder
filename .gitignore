@@ -14,3 +14,8 @@ cache/
 Thumbs.db
 
 dizdar_disk.qcow2
+
+*.qcow2
+*.iso
+*.ppm
+
